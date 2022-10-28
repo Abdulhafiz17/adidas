@@ -101,6 +101,15 @@ export default {
 
         <router-link
           class="SidebarLink"
+          to="/revision"
+          v-if="role === 'branch_admin'"
+        >
+          <i class="icon"><span class="fa fa-folder" /></i>
+          <p>Mahsulotlar qoldig'i</p>
+        </router-link>
+
+        <router-link
+          class="SidebarLink"
           to="/expense"
           v-if="role === 'branch_admin'"
         >

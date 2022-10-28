@@ -371,7 +371,7 @@ export function confirmationOrder(id, data) {
 
 export function trades(id, page, limit) {
     return instance
-        .get(`get_trades/${id}?page=${page}&limit=${limit}`)
+        .get(`get_trades/${id}`)
 }
 export function toTrade(data) {
     return instance
@@ -407,9 +407,9 @@ export function createParty() {
     return instance
         .post("create_party")
 }
-export function confirmationParty(party_id, warehouse_id, currency_id, to_branch) {
+export function confirmationParty(party_id, warehouse_id, currency_id, to_branch, to_price) {
     return instance
-        .post(`confirmation_party/${party_id}/${warehouse_id}/${currency_id}?to_branch=${to_branch}`)
+        .post(`confirmation_party/${party_id}/${warehouse_id}/${currency_id}?to_branch=${to_branch}&to_price=${to_price}`)
 }
 export function partyBalances(id) {
     return instance

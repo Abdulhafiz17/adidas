@@ -390,9 +390,6 @@
   <div class="modal fade" id="confirm">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h4>Ombor tanlang</h4>
-        </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-md-12">
@@ -402,33 +399,69 @@
                 <span v-if="index !== totalExpense.length - 1">, </span>
               </span>
               <label>
-                Chiqimlarni yaxlitlash uchun valyuta turini tanlang
-                <div class="input-group input-group-sm mt-1">
-                  <select
-                    class="form-select form-select-sm"
-                    v-model="currency_id"
-                    @click="currencies.length ? '' : getCurrencies()"
-                  >
-                    <option value="">valyuta</option>
-                    <option
-                      v-for="item in currencies"
-                      :key="item"
-                      :value="item.id"
+                <form @submit.prevent="confirmParty()" id="form-confirmation">
+                  Chiqimlarni yaxlitlash uchun valyuta turini tanlang
+                  <div class="input-group input-group-sm mt-1">
+                    <select
+                      class="form-select form-select-sm"
+                      required
+                      v-model="currency_id"
+                      @click="currencies.length ? '' : getCurrencies()"
                     >
-                      {{ item.currency }}
-                    </option>
-                  </select>
-                </div>
+                      <option value="">valyuta</option>
+                      <option
+                        v-for="item in currencies"
+                        :key="item"
+                        :value="item.id"
+                      >
+                        {{ item.currency }}
+                      </option>
+                    </select>
+                  </div>
+                </form>
               </label>
             </div>
             <div class="col-md-12">
+              <!-- <label> -->
+              Chiqimlarni yaxlitlash turini tanlang
               <div class="row">
+                <div class="col-md-6">
+                  <label
+                    :class="`btn btn${to_price ? '-outline-' : '-'}secondary`"
+                  >
+                    <input type="radio" v-model="to_price" :value="false" />
+                    Mahsulot miqdori bo'yicha
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label
+                    :class="`btn btn${to_price ? '-' : '-outline-'}secondary`"
+                  >
+                    <input type="radio" v-model="to_price" :value="true" />
+                    Mahsulot narxi bo'yicha
+                  </label>
+                </div>
+              </div>
+              <!-- <select
+                  form="form-confirmation"
+                  class="form-select form-select-sm"
+                  required
+                  v-model="to_price"
+                >
+                  <option :value="false">Mahsulot miqdori bo'yicha</option>
+                  <option :value="true">Mahsulot narxi bo'yicha</option>
+                </select> -->
+              <!-- </label> -->
+            </div>
+            <div class="col-md-12">
+              <h4>Omborni tanlang</h4>
+              <!-- <div class="row">
                 <div class="col-md-6 my-1">
                   <button
                     :class="`tab btn btn-block btn${
                       to_branch ? '-outline-' : '-'
                     }secondary`"
-                    @click="to_branch = !to_branch"
+                    @click="to_branch = false"
                   >
                     <i class="fa fa-warehouse" /> Omborga yuborish
                   </button>
@@ -438,33 +471,35 @@
                     :class="`tab btn btn-block btn${
                       to_branch ? '-' : '-outline-'
                     }secondary`"
-                    @click="to_branch = !to_branch"
+                    @click="to_branch = true"
                   >
                     <i class="fa fa-code-branch" /> Filialga yuborish
                   </button>
                 </div>
-              </div>
+              </div> -->
             </div>
             <div class="col-md-12">
               <ul class="list-group" v-if="!to_branch">
-                <li
+                <button
+                  form="form-confirmation"
                   class="list-group-item"
                   v-for="item in warehouses"
                   :key="item"
-                  @click="confirmParty(item.id)"
+                  @click="to_id = item.id"
                 >
                   {{ item.name }}
-                </li>
+                </button>
               </ul>
               <ul class="list-group" v-if="to_branch">
-                <li
+                <button
+                  form="form-confirmation"
                   class="list-group-item"
                   v-for="item in branches"
                   :key="item"
-                  @click="confirmParty(item.id)"
+                  @click="to_id"
                 >
                   {{ item.name }}
-                </li>
+                </button>
               </ul>
             </div>
           </div>
@@ -535,6 +570,8 @@ export default {
       },
       currency_id: "",
       to_branch: false,
+      to_price: false,
+      to_id: 0,
     };
   },
   created() {
@@ -732,34 +769,25 @@ export default {
         }
       });
     },
-    confirmParty(id) {
+    confirmParty() {
       this.$emit("setloading", true);
-      if (this.currency_id) {
-        confirmationParty(
-          this.$route.params.id,
-          id,
-          this.currency_id,
-          this.to_branch
-        )
-          .then((Response) => {
-            document.querySelectorAll("[data-dismiss]")[1].click();
-            success().then(() => {
-              this.$router.push("/taminotlar");
-            });
-          })
-          .catch((error) => {
-            this.$emit("setloading", false);
-            catchError(error);
+      confirmationParty(
+        this.$route.params.id,
+        this.to_id,
+        this.currency_id,
+        this.to_branch,
+        this.to_price
+      )
+        .then((Response) => {
+          document.querySelectorAll("[data-dismiss]")[1].click();
+          success().then(() => {
+            this.$router.push("/taminotlar");
           });
-      } else {
-        swal({
-          icon: "warning",
-          title: "Valyuta tanlanmagan !",
-          timer: 2500,
-        }).then(() => {
+        })
+        .catch((error) => {
           this.$emit("setloading", false);
+          catchError(error);
         });
-      }
     },
   },
 };

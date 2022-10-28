@@ -54,7 +54,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 .sidebar:hover {
-  width: 160px;
+  width: 190px;
   backdrop-filter: blur(2px);
   background: var(--background-hover);
 }
@@ -101,7 +101,7 @@ i.icon {
 }
 
 p {
-  width: 100px;
+  width: 130px;
   margin: 5px;
   text-align: left;
 }

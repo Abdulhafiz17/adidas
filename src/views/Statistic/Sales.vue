@@ -24,9 +24,9 @@
       </button>
     </div>
     <div class="col-md-1 my-1">
-      <div class="btn-group btn-group-sm">
+      <div class="btn-group btn-group-sm w-100">
         <button
-          :class="`btn btn${
+          :class="`btn w-100 btn${
             template == 'chart' ? '-' : '-outline-'
           }success template`"
           @click="template = 'chart'"
@@ -35,7 +35,7 @@
           <i class="fa fa-chart-line" />
         </button>
         <button
-          :class="`btn btn${
+          :class="`btn w-100 btn${
             template == 'card' ? '-' : '-outline-'
           }primary template`"
           @click="template = 'card'"
@@ -55,7 +55,17 @@
     style="max-height: 70vh"
   >
     <div class="row">
-      <div class="col-md-3 col-sm-6 my-1" v-for="item in days" :key="item">
+      <div
+        class="col-md-3 col-sm-6 my-1"
+        v-for="item in days"
+        :key="item"
+        v-show="
+          item.orders?.length ||
+          item.trade_cat_data?.length ||
+          item.expense?.length ||
+          item.returned_price
+        "
+      >
         <div
           class="card shadow day"
           data-toggle="modal"
@@ -71,6 +81,19 @@
                 {{ _.format(item.trade_total_price) + " " + branch_currency }}
               </strong>
             </span>
+            <span>
+              Vozvrat:
+              <strong>
+                {{ _.format(item.returned_price) + " " + branch_currency }}
+              </strong>
+            </span>
+            <hr />
+            <span>
+              Savdo:
+              <strong>
+                {{ _.format(item.savdo_umumiy) + " " + branch_currency }}
+              </strong>
+            </span>
             <span
               :title="
                 'Buyurtma chegirmasi: ' +
@@ -83,7 +106,7 @@
                 branch_currency
               "
             >
-              Umumiy chegirma:
+              Chegirma:
               <strong>
                 {{
                   _.format(
@@ -95,17 +118,26 @@
               </strong>
             </span>
             <span>
-              Umumiy tan narx:
-              <strong>
-                {{
-                  _.format(item.trade_total_tan_narx) + " " + branch_currency
-                }}
-              </strong>
-            </span>
-            <span>
-              Umumiy chiqim:
+              Chiqim:
               <strong>
                 {{ _.format(item.expense_price) + " " + branch_currency }}
+              </strong>
+            </span>
+            <hr />
+
+            <span>
+              Kassadagi pul:
+              <strong>
+                {{
+                  _.format(
+                    item.savdo_umumiy -
+                      (item.order_total_discount +
+                        item.trade_total_discount +
+                        item.expense_price)
+                  ) +
+                  " " +
+                  branch_currency
+                }}
               </strong>
             </span>
             <span>
@@ -125,10 +157,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="row p-5" v-if="!days.length">
-      <h3>Ma'lumot mavjud emas</h3>
     </div>
   </div>
 
@@ -162,6 +190,20 @@
               <li class="nav-item" role="presentation">
                 <button
                   class="nav-link btn-sm"
+                  :id="`pills-category-tab`"
+                  data-bs-toggle="pill"
+                  :data-bs-target="`#pills-category`"
+                  type="button"
+                  role="tab"
+                  :aria-controls="`pills-category`"
+                  aria-selected="true"
+                >
+                  Kategoriyalar
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link btn-sm"
                   :id="`pills-chiqim-tab`"
                   data-bs-toggle="pill"
                   :data-bs-target="`#pills-chiqim`"
@@ -187,7 +229,7 @@
                     v-for="item in day.orders"
                     :key="item"
                     @click="
-                      order = {};
+                      order = item;
                       getLoan(item);
                     "
                     data-toggle="modal"
@@ -201,6 +243,28 @@
                   </li>
                 </ul>
                 <strong v-if="!day.orders.length">
+                  Ma'lumot mavjud emas
+                </strong>
+              </div>
+              <div
+                class="tab-pane fade"
+                :id="`pills-category`"
+                role="tabpanel"
+                :aria-labelledby="`pills-category-tab`"
+              >
+                <ul class="list-group" v-if="day.trade_cat_data.length">
+                  <li
+                    class="list-group-item"
+                    v-for="item in day.trade_cat_data"
+                    :key="item"
+                  >
+                    <h6>{{ item.cat }}</h6>
+                    <h6>
+                      {{ _.format(item.trade_price) + " " + branch_currency }}
+                    </h6>
+                  </li>
+                </ul>
+                <strong v-if="!day.trade_cat_data.length">
                   Ma'lumot mavjud emas
                 </strong>
               </div>
@@ -401,71 +465,114 @@
                     </td>
                   </tr>
                 </tbody>
-                <tfoot>
-                  <tr>
-                    <td colspan="6">
-                      <div
-                        class="
-                          input-group input-group-sm
-                          justify-content-center
-                        "
-                      >
-                        <button
-                          class="btn btn-sm"
-                          @click="getTrades(order, 0, limit_2)"
-                          :disabled="page_2 == 0"
-                        >
-                          <i class="fa fa-angle-double-left" />
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getTrades(order, page_2 - 1, limit_2)"
-                          :disabled="page_2 == 0"
-                        >
-                          <i class="fa fa-angle-left" />
-                        </button>
-                        <button class="btn btn-sm">
-                          {{ page_2 + 1 }}
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getTrades(order, page_2 + 1, limit_2)"
-                          :disabled="page_2 == pages_2 - 1 || pages_2 == 0"
-                        >
-                          <i class="fa fa-angle-right" />
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getTrades(order, pages_2 - 1, limit_2)"
-                          :disabled="page_2 == pages_2 - 1 || pages_2 == 0"
-                        >
-                          <i class="fa fa-angle-double-right" />
-                        </button>
-                        <div class="input-group-append">
-                          <select
-                            class="form-select form-select-sm"
-                            v-model="limit_2"
-                            @change="getTrades(order, page_2, limit_2)"
-                          >
-                            <option disabled value="">limit</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                          </select>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tfoot>
               </table>
             </div>
           </div>
         </div>
         <div class="modal-footer">
+          <button
+            class="btn btn-outline-primary"
+            @click="createBarcode(order.id)"
+          >
+            <i class="fa fa-print"></i>
+          </button>
           <button class="btn btn-outline-danger" data-dismiss="modal">
             <i class="far fa-circle-xmark" />
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="orderCheck d-none">
+    <div id="check">
+      <ul class="list-group" v-if="order && order.balance">
+        <li class="list-group-item">
+          <span></span>
+          <span>
+            {{ order.time.substring(0, 16).replace("T", " ") }}
+          </span>
+        </li>
+        <hr />
+        <span class="p-1">Mahsulotlar</span>
+        <li class="list-group-item" v-for="item in order.trades" :key="item">
+          <span>
+            {{
+              item.Products.articul +
+              "-" +
+              item.Products.size +
+              " x " +
+              item.Trades.quantity
+            }}
+          </span>
+          <span>
+            {{
+              Intl.NumberFormat().format(item.Trades.price) +
+              " " +
+              order.income[0].currency +
+              (item.Trades.discount
+                ? " ( -" +
+                  Intl.NumberFormat().format(item.Trades.discount) +
+                  " " +
+                  order.income[0].currency +
+                  " )"
+                : "")
+            }}
+          </span>
+        </li>
+        <hr />
+        <li class="list-group-item">
+          <span>Buyurtma summasi: </span>
+          <span>
+            {{
+              Intl.NumberFormat().format(order.balance.total_price) +
+              " " +
+              order.balance.currency
+            }}
+          </span>
+        </li>
+        <li class="list-group-item">
+          <span>Buyurtma chegirmasi: </span>
+          <span>
+            {{
+              Intl.NumberFormat().format(order.discount) +
+              " " +
+              order.balance.currency
+            }}
+          </span>
+        </li>
+        <hr />
+        <li class="list-group-item">
+          {{ "To'lov summasi :" }}
+          <span
+            v-for="item in order.income.filter(
+              (income) => income.Incomes.money > 0
+            )"
+            :key="item"
+          >
+            {{ item.Incomes.comment + ":" }}
+            {{
+              Intl.NumberFormat().format(item.Incomes.money) +
+              " " +
+              item.currency
+            }}
+          </span>
+        </li>
+        <li class="list-group-item" v-if="order.Loans">
+          <span>Nasiya</span>
+          <span>
+            {{
+              Intl.NumberFormat().format(order.Loans.Loans.money) +
+              " " +
+              order.Loans.loan_currency +
+              " " +
+              order.Loans.Loans.return_date
+            }}
+          </span>
+        </li>
+      </ul>
+      <div class="d-flex justify-content-center">
+        <img id="order_barcode" />
       </div>
     </div>
   </div>
@@ -481,6 +588,7 @@ import {
   tradeBalance,
   trades,
 } from "@/components/Api/Api";
+import JsBarcode from "jsbarcode";
 export default {
   name: "Sales",
   props: ["branch_currency"],
@@ -515,29 +623,30 @@ export default {
     this.getDays();
   },
   mounted() {},
-  watch: {
-    // days(days) {
-    //   let labels = [], savdo = [], chiqim = [], daromad = [];
-    //   for (let i = 0; i < days.length; i++) {
-    //     labels.push(days[i].day);
-    //     savdo.push(days[i].trade_total_price)
-    //     chiqim.push(days[i].expense_price)
-    //     daromad.push(days[i].total_profit)
-    //     if (i == days.length - 1) {
-    //       this.createChart(labels, savdo, chiqim, daromad);
-    //     }
-    //   }
-    // },
-  },
+  // watch: {
+  //   days(days) {
+  //     let labels = [], savdo = [], chiqim = [], daromad = [];
+  //     for (let i = 0; i < days.length; i++) {
+  //       labels.push(days[i].day);
+  //       savdo.push(days[i].trade_total_price)
+  //       chiqim.push(days[i].expense_price)
+  //       daromad.push(days[i].total_profit)
+  //       if (i == days.length - 1) {
+  //         this.createChart(labels, savdo, chiqim, daromad);
+  //       }
+  //     }
+  //   },
+  // },
   methods: {
     getDays() {
       this.template = "chart";
       this.$emit("setloading", true);
       statisticOrders(this.from_date, this.to_date, this.$route.params.id)
         .then((Response) => {
-          this.days = Response.data;
-          if (this.days.length) this.prepareChart(this.days);
-          else this.$emit("setloading", false, "sales");
+          this.days = Response.data.splice(1, Response.data.length);
+          if (this.days.length) {
+            this.prepareChart(this.days);
+          } else this.$emit("setloading", false, "sales");
         })
         .catch((error) => {
           this.$emit("setloading", false);
@@ -618,7 +727,7 @@ export default {
         labels = [],
         savdo = [],
         chegirma = [],
-        tan_narx = [],
+        returned = [],
         chiqim = [],
         daromad = [];
       document.getElementById("salesChart").remove();
@@ -633,15 +742,15 @@ export default {
         chegirma.push(
           days[i].order_total_discount + days[i].trade_total_discount
         );
-        tan_narx.push(days[i].trade_total_tan_narx);
+        returned.push(days[i].returned_price);
         chiqim.push(days[i].expense_price);
         daromad.push(days[i].total_profit);
         if (i == days.length - 1) {
-          this.createChart(labels, savdo, chegirma, tan_narx, chiqim, daromad);
+          this.createChart(labels, savdo, chegirma, returned, chiqim, daromad);
         }
       }
     },
-    createChart(labels, savdo, chegirma, tan_narx, chiqim, daromad) {
+    createChart(labels, savdo, chegirma, returned, chiqim, daromad) {
       const ctx = document.getElementById("salesChart").getContext("2d");
       new Chart(ctx, {
         type: "bar",
@@ -658,13 +767,13 @@ export default {
             {
               label: "Chegirma",
               data: chegirma,
-              backgroundColor: ["rgb(46, 139, 87)"],
-              borderColor: ["rgb(0, 255, 110)"],
+              backgroundColor: ["rgb(127, 255, 212, .2)"],
+              borderColor: ["rgb(127, 255, 212)"],
               borderWidth: 1,
             },
             {
-              label: "Tan narx",
-              data: tan_narx,
+              label: "Vozvrat",
+              data: returned,
               backgroundColor: ["rgba(255, 255, 0, .1)"],
               borderColor: ["rgb(255, 165, 0)"],
               borderWidth: 1,
@@ -695,6 +804,36 @@ export default {
       });
       this.$emit("setloading", false, "sales");
     },
+    createBarcode(id) {
+      setTimeout(() => {
+        JsBarcode("#order_barcode", id, {
+          // format: "CODE128",
+          width: 2,
+          height: 30,
+        });
+        this.printCheck();
+      }, 100);
+    },
+    printCheck() {
+      let check = document.querySelector("#check").outerHTML;
+      const winPrint = window.open("", "", "");
+      winPrint.document.querySelector("head").innerHTML = `
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+      <style>
+        * {
+          font-size: 12px !important;
+        }
+        .list-group-item {
+          display: flex !important;
+          justify-content: space-between !important;
+          border: none !important;
+        }
+      </style>
+      `;
+      winPrint.document.querySelector("body").innerHTML = check;
+      winPrint.print();
+    },
   },
 };
 </script>
@@ -703,15 +842,19 @@ export default {
 .responsive {
   max-height: 60vh;
 }
+
 .template {
   box-shadow: none;
 }
+
 .card {
   height: 100%;
 }
+
 .day {
   cursor: pointer;
 }
+
 .day span {
   display: flex;
   justify-content: space-between;
