@@ -101,10 +101,10 @@ export default {
 
         <router-link
           class="SidebarLink"
-          to="/revision"
+          :to="`/revision/${branch_id}`"
           v-if="role === 'branch_admin'"
         >
-          <i class="icon"><span class="fa fa-folder" /></i>
+          <i class="icon"><span class="fa fa-box" /></i>
           <p>Mahsulotlar qoldig'i</p>
         </router-link>
 

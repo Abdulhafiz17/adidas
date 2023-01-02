@@ -30,7 +30,13 @@
             <i class="fa fa-home" />
           </router-link>
         </div>
-        <Router-view @setloading="setloading" />
+        <Router-view @setloading="setloading" v-slot="{ Component, route }">
+          <transition name="router" mode="out-in">
+            <div :key="route">
+              <component :is="Component"></component>
+            </div>
+          </transition>
+        </Router-view>
       </div>
       <!-- <Notification v-if="role == 'branch_admin' && this.$route.name !== 'login'"/> -->
     </div>
@@ -115,5 +121,39 @@ export default {
 .btn-admin {
   position: absolute;
   z-index: 10;
+}
+
+.router-enter-active {
+  animation: routerIn 0.3s ease;
+  transform-origin: top;
+}
+
+@keyframes routerIn {
+  0% {
+    transform: translate(100%, 0);
+    /* transform: scale(0); */
+  }
+  /* 50% {
+    transform: scale(1.1);
+  } */
+  100% {
+    transform: translate(0, 0);
+    /* transform: scale(1); */
+  }
+}
+
+.router-leave-active {
+  animation: routerOut 0.3s ease;
+}
+
+@keyframes routerOut {
+  from {
+    transform: translate(0, 0);
+    /* transform: scale(1); */
+  }
+  to {
+    transform: translate(100%, 0);
+    /* transform: scale(0.9); */
+  }
 }
 </style>
