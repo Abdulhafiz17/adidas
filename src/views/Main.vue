@@ -8,7 +8,7 @@
   <hr />
 
   <div class="row">
-    <div class="col-md-4 my-1">
+    <!-- <div class="col-md-4 my-1">
       <router-link to="/statistics" class="card shadow">
         <div class="card-body">
           <i class="fa fa-2x fa-chart-line" />
@@ -16,7 +16,7 @@
           <strong>Hisobotlar</strong>
         </div>
       </router-link>
-    </div>
+    </div> -->
     <div class="col-md-4 my-1">
       <router-link to="/filiallar" class="card shadow">
         <div class="card-body">

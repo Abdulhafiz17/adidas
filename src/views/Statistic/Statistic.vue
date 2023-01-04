@@ -1,7 +1,13 @@
 <template>
   <h3>
     <span class="fa fa-chart-line" />
-    {{ role == "admin" ? (branch ? branch.name + " hisobotlari" : "") : "Hisobotlar" }}
+    {{
+      role == "admin"
+        ? branch
+          ? branch.name + " hisobotlari"
+          : ""
+        : "Hisobotlar"
+    }}
   </h3>
   <div class="row">
     <div class="col-md-4 my-1"></div>
@@ -19,14 +25,14 @@
           v-if="sales"
         />
       </div>
-      <hr />
+      <!-- <hr />
       <div class="col-md-12 my-1">
         <Products @setloading="setloading" v-if="products" />
       </div>
       <hr />
       <div class="col-md-12 my-1">
         <Users @setloading="setloading" v-if="users" />
-      </div>
+      </div> -->
       <!-- <div class="col-md-12 my-1">
         <Expenses @setloading="setloading" />
       </div>
@@ -60,15 +66,15 @@ export default {
   },
   methods: {
     setloading(loading, component) {
-      if (component == "sales") {
-        this.products
-          ? this.$emit("setloading", loading)
-          : (this.products = true);
-      } else if (component == "products") {
-        this.users ? this.$emit("setloading", loading) : (this.users = true);
-      } else if (component == undefined) {
+      // if (component == "sales") {
+      //   this.products
+      //     ? this.$emit("setloading", loading)
+      //     : (this.products = true);
+      // } else if (component == "products") {
+      //   this.users ? this.$emit("setloading", loading) : (this.users = true);
+      // } else {
         this.$emit("setloading", loading);
-      }
+      // }
     },
     getBranch() {
       branch(this.$route.params.id)

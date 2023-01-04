@@ -53,7 +53,7 @@
       </span>
     </div>
     <div class="col-md-2 d-flex align-items-center justify-content-center">
-      <button
+      <!-- <button
         class="btn btn-sm btn-outline-secondary"
         data-toggle="modal"
         data-target="#addProduct"
@@ -63,7 +63,7 @@
         "
       >
         <i class="fa fa-box" /> Mahsulot qo'shish
-      </button>
+      </button> -->
     </div>
   </div>
   <hr />

@@ -275,7 +275,7 @@
                   />
                   <div class="input-group-append">
                     <div class="input-group-text">
-                      {{ editProduct.Currencies.currency }}
+                      {{ editProduct.Products.currency_savdo.currency }}
                     </div>
                   </div>
                   <div class="input-group-append">
@@ -304,7 +304,7 @@
                   />
                   <div class="input-group-append">
                     <div class="input-group-text">
-                      {{ editProduct.Currencies.currency }}
+                      {{ editProduct.Products.currency_savdo.currency }}
                     </div>
                   </div>
                   <div class="input-group-append">
@@ -328,7 +328,7 @@
                   />
                   <div class="input-group-append">
                     <div class="input-group-text">
-                      {{ editProduct.Currencies.currency }}
+                      {{ editProduct.Products.currency_savdo.currency }}
                     </div>
                   </div>
                   <div class="input-group-append">

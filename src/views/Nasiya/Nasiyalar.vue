@@ -83,6 +83,7 @@
                   </select>
                 </th>
                 <th>Summa</th>
+                <th>Muddat</th>
                 <th>Qaytarish sanasi</th>
                 <th></th>
               </tr>
@@ -97,7 +98,24 @@
                     i.loan_currency
                   }}
                 </td>
-                <td>{{ i.Loans.return_date }}</td>
+                <td>
+                  <span
+                    class="rounded p-1"
+                    :class="
+                      countDays(i.Loans.return_date) > 10
+                        ? 'bg-success'
+                        : countDays(i.Loans.return_date) <= 10 &&
+                          countDays(i.Loans.return_date) > 5
+                        ? 'bg-warning'
+                        : 'bg-danger'
+                    "
+                  >
+                    {{ countDays(i.Loans.return_date) + " kun" }}
+                  </span>
+                </td>
+                <td>
+                  {{ i.Loans.return_date }}
+                </td>
                 <td>
                   <div class="btn-group btn-group-sm">
                     <router-link
@@ -421,6 +439,13 @@ export default {
           this.$emit("setloading", false);
           catchError(error);
         });
+    },
+    countDays(date) {
+      let date_1 = new Date(date),
+        date_2 = new Date(),
+        difference = date_1.getTime() - date_2.getTime(),
+        days = Math.ceil(difference / (1000 * 3600 * 24));
+      return days;
     },
   },
 };

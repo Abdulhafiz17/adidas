@@ -140,24 +140,50 @@
             </form>
           </td>
           <td>
-            <form @submit.prevent="putTrade('', item)">
-              <div class="input-group input-group-sm w-75 mx-auto">
-                <input
-                  type="number"
-                  step="any"
-                  min="0"
-                  required
-                  class="form-control text-center"
-                  v-model="item.Trades.discount"
-                  @focusout="putTrade('', item)"
-                />
-                <div class="input-group-append">
-                  <div class="input-group-text">
-                    {{ item.Currencies ? item.Currencies.currency : "" }}
-                  </div>
-                </div>
+            <form @submit.prevent="putTrade('', item)" id="form-discount" />
+            <form @submit.prevent="countPrice(item)" id="form-discount-1" />
+            <div class="input-group input-group-sm w-75 mx-auto">
+              <input
+                type="number"
+                step="any"
+                min="0"
+                required
+                class="form-control text-center"
+                form="form-discount"
+                v-model="item.Trades.discount"
+                @click="
+                  item.Trades.discount ? false : (item.Trades.discount = null)
+                "
+                @focusout="
+                  item.Trades.discount ? false : (item.Trades.discount = 0);
+                  putTrade('', item);
+                "
+              />
+              <div class="input-group-text">
+                {{ item.Currencies ? item.Currencies.currency : "" }}
               </div>
-            </form>
+              <input
+                type="number"
+                step="any"
+                min="0"
+                required
+                class="form-control text-center"
+                form="form-discount-1"
+                v-model="item.Trades.discount_percent"
+                @click="
+                  item.Trades.discount_percent
+                    ? false
+                    : (item.Trades.discount_percent = null)
+                "
+                @focusout="
+                  item.Trades.discount_percent
+                    ? false
+                    : (item.Trades.discount_percent = 0);
+                  countPrice(item);
+                "
+              />
+              <div class="input-group-text">%</div>
+            </div>
           </td>
           <td>
             <span
@@ -741,6 +767,9 @@ export default {
       trades(order.id, 0, 50)
         .then((Response) => {
           this.trades = Response.data.data;
+          this.trades.forEach((item) => {
+            item.Trades.discount_percent = this.countPercent(item);
+          });
           this.getBalance(this.order.id);
         })
         .catch((error) => {
@@ -918,6 +947,22 @@ export default {
           this.$emit("setloading", false);
           catchError(error);
         });
+    },
+    countPercent(trade) {
+      let percent;
+      if (trade.Trades.discount) {
+        percent = (trade.Trades.discount * 100) / trade.Trades.price;
+      } else {
+        percent = 0;
+      }
+      return percent;
+    },
+    countPrice(trade) {
+      if (trade.Trades.discount_percent) {
+        trade.Trades.discount =
+          (trade.Trades.price / 100) * trade.Trades.discount_percent;
+      }
+      this.putTrade("", trade);
     },
     getUsers() {
       users(localStorage.getItem("branch_id"), 0, 50)
