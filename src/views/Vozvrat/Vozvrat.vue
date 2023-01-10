@@ -102,7 +102,9 @@
                 Umumiy nasiya:
                 {{
                   loan.total_loan_price
-                    ? loan.total_loan_price + " " + balance.currency
+                    ? Intl.NumberFormat().format(loan.total_loan_price) +
+                      " " +
+                      balance.currency
                     : 0
                 }}
               </button>
@@ -568,8 +570,16 @@ export default {
   },
   created() {
     this.$emit("setloading", false);
+    let order_id = localStorage.getItem("order_id_for_return");
+    if (order_id) {
+      this.order_id = order_id;
+      this.getOrder(order_id);
+    }
   },
   mounted() {},
+  beforeUnmount() {
+    localStorage.removeItem("order_id_for_return");
+  },
   methods: {
     getOrder(id) {
       this.loan = null;

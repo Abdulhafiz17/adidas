@@ -66,13 +66,13 @@
           item.returned_price
         "
       >
-        <div
-          class="card shadow day"
-          data-toggle="modal"
-          data-target="#day"
-          @click="day = item"
-        >
-          <div class="card-body">
+        <div class="card shadow day">
+          <div
+            class="card-body"
+            data-toggle="modal"
+            data-target="#day"
+            @click="day = item"
+          >
             <strong>{{ item.day }}</strong>
             <hr />
             <span>
@@ -124,7 +124,6 @@
               </strong>
             </span>
             <hr />
-
             <span>
               Kassadagi pul:
               <strong>
@@ -154,6 +153,46 @@
                 {{ _.format(item.total_profit) + " " + branch_currency }}
               </strong>
             </span>
+          </div>
+          <div class="card-body">
+            <details>
+              <summary>Hodimlar ulushi</summary>
+              <ul class="list-group">
+                <li
+                  class="list-group-item d-block"
+                  v-for="item2 in users"
+                  :key="item2"
+                >
+                  <span>
+                    {{ item2.name }}
+                  </span>
+                  <span
+                    :class="
+                      countPercentPrice(
+                        item.total_profit,
+                        item2.profit_percentage
+                      ) > 0
+                        ? 'text-success'
+                        : countPercentPrice(
+                            item.total_profit,
+                            item2.profit_percentage
+                          ) < 0
+                        ? 'text-danger'
+                        : ''
+                    "
+                  >
+                    {{
+                      `${_.format(
+                        countPercentPrice(
+                          item.total_profit,
+                          item2.profit_percentage
+                        )
+                      )} ${branch_currency}`
+                    }}
+                  </span>
+                </li>
+              </ul>
+            </details>
           </div>
         </div>
       </div>
@@ -322,7 +361,11 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-outline-danger" data-dismiss="modal">
+          <button
+            class="btn btn-outline-danger"
+            data-dismiss="modal"
+            close-day-modal
+          >
             <i class="far fa-circle-xmark" />
           </button>
         </div>
@@ -335,6 +378,9 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5>Buyurtma</h5>
+          <button class="btn btn-outline-info" @click="routerToReturn()">
+            <i class="fa fa-undo" />
+          </button>
         </div>
         <div class="modal-body">
           <div
@@ -476,7 +522,11 @@
           >
             <i class="fa fa-print"></i>
           </button>
-          <button class="btn btn-outline-danger" data-dismiss="modal">
+          <button
+            class="btn btn-outline-danger"
+            data-dismiss="modal"
+            close-order-modal
+          >
             <i class="far fa-circle-xmark" />
           </button>
         </div>
@@ -587,6 +637,7 @@ import {
   statisticOrders,
   tradeBalance,
   trades,
+  users,
 } from "@/components/Api/Api";
 import JsBarcode from "jsbarcode";
 export default {
@@ -613,6 +664,7 @@ export default {
       )
         .toISOString()
         .substring(0, 10),
+      users: [],
       days: [],
       day: null,
       order: null,
@@ -620,7 +672,7 @@ export default {
     };
   },
   created() {
-    this.getDays();
+    this.getUsers();
   },
   mounted() {},
   // watch: {
@@ -638,9 +690,23 @@ export default {
   //   },
   // },
   methods: {
-    getDays() {
+    countPercentPrice(sum, percent) {
+      return (sum / 100) * percent;
+    },
+    getUsers() {
       this.template = "chart";
       this.$emit("setloading", true);
+      users(this.branch_id, 0, 25)
+        .then((Response) => {
+          this.users = Response.data.data;
+          this.getDays();
+        })
+        .catch((error) => {
+          this.$emit("setloading", false);
+          catchError(error);
+        });
+    },
+    getDays() {
       statisticOrders(this.from_date, this.to_date, this.$route.params.id)
         .then((Response) => {
           this.days = Response.data.splice(1, Response.data.length);
@@ -833,6 +899,12 @@ export default {
       `;
       winPrint.document.querySelector("body").innerHTML = check;
       winPrint.print();
+    },
+    routerToReturn() {
+      localStorage.setItem("order_id_for_return", this.order.id);
+      document.querySelector("[close-day-modal]").click();
+      document.querySelector("[close-order-modal]").click();
+      this.$router.push("/return");
     },
   },
 };
