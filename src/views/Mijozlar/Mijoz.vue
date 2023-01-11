@@ -4,9 +4,24 @@
     {{ customer ? "Mijoz " + customer.name : "Mijoz" }}
   </h3>
   <div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-4 my-1"></div>
-    <div class="col-md-4"></div>
+    <div class="col-md-1"></div>
+    <div
+      class="col-md-10 my-1 d-flex justify-content-around align-items-center text-center"
+    >
+      <span>
+        Umumiy savdo:
+        <strong>{{ Intl.NumberFormat().format(sum_trade) }} so'm</strong>
+      </span>
+      <span>
+        Umumiy chegirma:
+        <strong>{{ Intl.NumberFormat().format(sum_discount) }} so'm</strong>
+      </span>
+      <span>
+        Umumiy qaytarilgan mahsulot:
+        <strong>{{ Intl.NumberFormat().format(sum_return) }} so'm</strong>
+      </span>
+    </div>
+    <div class="col-md-1"></div>
   </div>
   <hr />
   <div class="body">
@@ -258,6 +273,9 @@ export default {
       from_date: "",
       to_date: "",
       customer: null,
+      sum_trade: null,
+      sum_discount: null,
+      sum_return: null,
       orders: [],
       order: null,
       loan: null,
@@ -295,6 +313,9 @@ export default {
           this.page = Response.data.current_page;
           this.pages = Response.data.pages;
           this.orders = Response.data.data;
+          this.sum_trade = Response.data.sum_trade_balance;
+          this.sum_discount = Response.data.sum_discount;
+          this.sum_return = Response.data.sum_returned_money;
           this.$emit("setloading", false);
         })
         .catch((error) => {
@@ -381,5 +402,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
