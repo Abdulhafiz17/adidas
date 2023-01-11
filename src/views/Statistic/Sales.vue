@@ -117,12 +117,6 @@
                 }}
               </strong>
             </span>
-            <span>
-              Chiqim:
-              <strong>
-                {{ _.format(item.expense_price) + " " + branch_currency }}
-              </strong>
-            </span>
             <hr />
             <span>
               Kassadagi pul:
@@ -130,9 +124,7 @@
                 {{
                   _.format(
                     item.savdo_umumiy -
-                      (item.order_total_discount +
-                        item.trade_total_discount +
-                        item.expense_price)
+                      (item.order_total_discount + item.trade_total_discount)
                   ) +
                   " " +
                   branch_currency
