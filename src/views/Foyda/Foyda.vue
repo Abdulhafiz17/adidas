@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col-md-9 my-1" v-if="distribute">
       <div class="row">
-        <div class="col-md-4 my-1">
+        <div class="col-md-6 my-1">
           <button
             class="btn btn-sm btn-block btn-outline-primary"
             data-toggle="modal"
@@ -16,28 +16,8 @@
             }}
           </button>
         </div>
-        <div class="col-md-4 my-1">
-          <button
-            class="btn btn-sm btn-block btn-outline-warning"
-            data-toggle="modal"
-            data-target="#expenses"
-          >
-            {{
-              Intl.NumberFormat().format(distribute.expense_price) +
-              " " +
-              branch_currency
-            }}
-          </button>
-        </div>
         <div
-          class="
-            col-md-4
-            my-1
-            text-success
-            d-flex
-            align-items-center
-            justify-content-center
-          "
+          class="col-md-6 my-1 text-success d-flex align-items-center justify-content-center"
         >
           <span
             :class="
