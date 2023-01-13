@@ -55,7 +55,6 @@
 
 <script>
 import isloading from "../../components/Animation/Anime.vue";
-import { catchError, productsByCategory } from "@/components/Api/Api";
 export default {
   name: "CategoryProducts",
   components: { isloading },
@@ -66,31 +65,10 @@ export default {
       products: [],
     };
   },
-  mounted() {
-    this.getData();
-  },
-  computed: {
-    filterRow: function() {
-      return this.products.filter((product) => {
-        return product.name.toLowerCase().match(this.search.toLowerCase())
-      })
-    }
-  },
-  methods: {
-    getData() {
-      productsByCategory(this.$route.params.id)
-        .then((Response) => {
-          this.products = Response.data;
-          this.isloading = false;
-        })
-        .catch((error) => {
-          this.isloading = false;
-          catchError(error);
-        });
-    },
-  },
+  mounted() {},
+  computed: {},
+  methods: {},
 };
 </script>
 
-<style>
-</style>
+<style></style>

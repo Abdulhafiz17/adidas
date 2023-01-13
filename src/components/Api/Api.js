@@ -317,8 +317,8 @@ export function updateControlProduct(data) {
     real_quantity: data.real_quantity,
   });
 }
-export function changeControlProductQuantity(data) {
-  return instance.put(`change_product_quantity`, data);
+export function changeControlProductQuantity() {
+  return instance.put(`change_product_quantity`);
 }
 
 // photo

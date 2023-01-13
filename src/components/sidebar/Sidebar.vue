@@ -99,14 +99,14 @@ export default {
           <p>Mahsulotlar</p>
         </router-link>
 
-        <!-- <router-link
+        <router-link
           class="SidebarLink"
           :to="`/revision/${branch_id}`"
           v-if="role === 'branch_admin'"
         >
           <i class="icon"><span class="fa fa-box" /></i>
           <p>Mahsulotlar qoldig'i</p>
-        </router-link> -->
+        </router-link>
 
         <router-link
           class="SidebarLink"

@@ -87,14 +87,14 @@ input,
 select,
 textarea {
   box-shadow: none !important;
-  transition: 0.15s all !important;
+  transition: all 0.15s !important;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
   border: 1px solid var(--main-border) !important;
-  transform: scale(1.03);
+  box-shadow: 0 0 10px -1px var(--main-border) !important;
 }
 
 textarea {
