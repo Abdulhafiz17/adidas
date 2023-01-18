@@ -232,20 +232,6 @@
                   Kategoriyalar
                 </button>
               </li>
-              <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link btn-sm"
-                  :id="`pills-chiqim-tab`"
-                  data-bs-toggle="pill"
-                  :data-bs-target="`#pills-chiqim`"
-                  type="button"
-                  role="tab"
-                  :aria-controls="`pills-chiqim`"
-                  aria-selected="false"
-                >
-                  Chiqimlar
-                </button>
-              </li>
             </ul>
             <div class="tab-content" id="pills-tabContent">
               <div
@@ -296,56 +282,6 @@
                   </li>
                 </ul>
                 <strong v-if="!day.trade_cat_data.length">
-                  Ma'lumot mavjud emas
-                </strong>
-              </div>
-              <div
-                class="tab-pane fade"
-                :id="`pills-chiqim`"
-                role="tabpanel"
-                :aria-labelledby="`pills-chiqim-tab`"
-              >
-                <div class="table-responsive" v-if="day.expenses.length">
-                  <table class="table table-sm table-hover">
-                    <thead>
-                      <tr>
-                        <th>Chiqim turi</th>
-                        <th>Izoh</th>
-                        <th>Summa</th>
-                        <th>Hodim</th>
-                        <th>Sana</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="expense in day.expenses" :key="expense">
-                        <td>
-                          {{
-                            expense.type == "fixed_expense"
-                              ? expense.f_expense.name
-                              : expense.type == "returned_product"
-                              ? "Qaytarib olingan mahsulot"
-                              : "Umumiy"
-                          }}
-                        </td>
-                        <td>{{ expense.comment }}</td>
-                        <td>
-                          {{
-                            _.format(expense.price) +
-                            " " +
-                            expense.currency.currency
-                          }}
-                        </td>
-                        <td>{{ expense.user.name }}</td>
-                        <td>
-                          {{
-                            expense.time.substring(0, expense.time.length - 9)
-                          }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <strong v-if="!day.expenses.length">
                   Ma'lumot mavjud emas
                 </strong>
               </div>
