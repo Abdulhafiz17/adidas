@@ -927,21 +927,7 @@ export default {
       }
       updateTrade(status, data)
         .then((Response) => {
-          // if (type == "<") {
-          //   trade.sum_quantity--;
-          //   if (trade.sum_quantity == 0) {
-          //     success().then(() => {
-          //       this.getTrades(this.order);
-          //     });
-          //   } else this.$emit("setloading", false);
-          // } else if (type == ">") {
-          //   trade.sum_quantity++;
-          //   this.$emit("setloading", false);
-          // } else {
-          success().then(() => {
-            this.getTrades(this.order);
-          });
-          // }
+          this.getTrades(this.order);
         })
         .catch((error) => {
           this.$emit("setloading", false);
