@@ -575,7 +575,7 @@ export default {
   data() {
     return {
       _: Intl.NumberFormat(),
-      branch_id: localStorage.getItem("branch_id"),
+      branch_id: this.$route.params.id,
       page: 0,
       pages: 1,
       limit: 50,
@@ -603,20 +603,6 @@ export default {
     this.getUsers();
   },
   mounted() {},
-  // watch: {
-  //   days(days) {
-  //     let labels = [], savdo = [], chiqim = [], daromad = [];
-  //     for (let i = 0; i < days.length; i++) {
-  //       labels.push(days[i].day);
-  //       savdo.push(days[i].trade_total_price)
-  //       chiqim.push(days[i].expense_price)
-  //       daromad.push(days[i].total_profit)
-  //       if (i == days.length - 1) {
-  //         this.createChart(labels, savdo, chiqim, daromad);
-  //       }
-  //     }
-  //   },
-  // },
   methods: {
     countPercentPrice(sum, percent) {
       return (sum / 100) * percent;
