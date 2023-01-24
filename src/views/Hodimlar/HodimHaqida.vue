@@ -1,5 +1,7 @@
 <template>
-  <h3><span class="fa fa-user" /> {{ user ? "Hodim " + user.name : "Hodim" }}</h3>
+  <h3>
+    <span class="fa fa-user" /> {{ user ? "Hodim " + user.name : "Hodim" }}
+  </h3>
   <ul class="nav nav-pills nav-justified" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
       <button
@@ -184,7 +186,7 @@
             <strong>{{ item.time.substring(0, item.time.length - 9) }}</strong>
           </summary>
           <div class="row my-1" v-if="order && income.length && balance">
-            <div class="col-md-3">
+            <div class="col-md-4">
               Buyurtma summasi
               <br />
               {{
@@ -193,16 +195,7 @@
                 balance.currency
               }}
             </div>
-            <div class="col-md-3">
-              Chegirma summa
-              <br />
-              {{
-                Intl.NumberFormat().format(order.discount) +
-                " " +
-                balance.currency
-              }}
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
               To'lov summa
               <br />
               <span v-for="(i, index) in income" :key="i">
@@ -217,7 +210,7 @@
                 <br />
               </span>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
               Nasiya summa
               <br />
               {{
