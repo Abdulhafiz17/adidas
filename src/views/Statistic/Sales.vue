@@ -306,7 +306,11 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5>Buyurtma</h5>
-          <button class="btn btn-outline-info" @click="routerToReturn()">
+          <button
+            class="btn btn-outline-info"
+            @click="routerToReturn()"
+            v-if="role == 'branch_admin'"
+          >
             <i class="fa fa-undo" />
           </button>
         </div>
@@ -317,7 +321,7 @@
             v-if="order"
           >
             <div class="row my-1" v-if="order && order.income && order.balance">
-              <div class="col-md-3">
+              <div class="col-md-4">
                 Buyurtma summasi
                 <br />
                 {{
@@ -326,18 +330,7 @@
                   order.balance.currency
                 }}
               </div>
-              <div class="col-md-3">
-                Chegirma summa
-                <br />
-                {{
-                  order.discount
-                    ? Intl.NumberFormat().format(order.discount) +
-                      " " +
-                      order.balance.currency
-                    : 0 + " " + order.balance.currency
-                }}
-              </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
                 To'lov summa
                 <br />
                 <span v-for="(i, index) in order.income" :key="i">
@@ -352,7 +345,7 @@
                   <br />
                 </span>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
                 Nasiya summa
                 <br />
                 {{
@@ -576,6 +569,7 @@ export default {
     return {
       _: Intl.NumberFormat(),
       branch_id: this.$route.params.id,
+      role: localStorage["role"],
       page: 0,
       pages: 1,
       limit: 50,
