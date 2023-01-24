@@ -741,7 +741,7 @@ export default {
       this.$emit("setloading", loading);
     },
     get(page, limit) {
-      this.$emit("`setloading`", true);
+      this.$emit("setloading", true);
       orders("", "", false, 0, page, limit)
         .then((Response) => {
           this.orders = Response.data.data;
@@ -1176,6 +1176,7 @@ label {
 }
 
 input[type="number"] {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
