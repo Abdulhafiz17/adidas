@@ -145,15 +145,6 @@
                 }}
               </div>
               <div class="col-md-3">
-                Chegirma summa
-                <br />
-                {{
-                  Intl.NumberFormat().format(order.discount) +
-                  " " +
-                  balance.currency
-                }}
-              </div>
-              <div class="col-md-3">
                 To'lov summa
                 <br />
                 <span v-for="(i, index) in income" :key="i">
@@ -225,6 +216,11 @@
                         " " +
                         i.Currencies.currency
                       }}
+                      <span v-if="i.Trades.discount">
+                        {{
+                          `( adminga: ${i.Discounts?.admin_price} filialga: ${i.Discounts?.branch_price} )`
+                        }}
+                      </span>
                     </td>
                     <td>
                       {{ i.sum_quantity + " dona" }}
