@@ -156,7 +156,7 @@
                 "
                 @focusout="
                   item.Trades.discount ? false : (item.Trades.discount = 0);
-                  putTrade('', item);
+                  putTrade('discount', item);
                 "
               />
               <div class="input-group-text">
@@ -184,7 +184,7 @@
               />
               <div class="input-group-text">%</div>
             </div>
-            <div class="input-group input-group-sm">
+            <div class="input-group input-group-sm" v-if="item.Discounts">
               <input
                 type="number"
                 step="any"
@@ -196,11 +196,10 @@
                     item.Trades.price -
                     item.Trades.discount -
                     item.Discounts.admin_price;
-                  putTrade('', item);
+                  putTrade('residual', item);
                 "
-                v-if="item.Discounts"
               />
-              <div class="input-group-text" v-if="item.Discounts">adminga</div>
+              <div class="input-group-text">adminga</div>
               <input
                 type="number"
                 step="any"
@@ -212,11 +211,10 @@
                     item.Trades.price -
                     item.Trades.discount -
                     item.Discounts.branch_price;
-                  putTrade('', item);
+                  putTrade('residual', item);
                 "
-                v-if="item.Discounts"
               />
-              <div class="input-group-text" v-if="item.Discounts">filialga</div>
+              <div class="input-group-text">filialga</div>
             </div>
           </td>
           <td>
@@ -805,6 +803,7 @@ export default {
           this.trades = Response.data.data;
           this.trades.forEach((item) => {
             item.Trades.discount_percent = this.countPercent(item);
+            if (!item.Trades.discount) item.Discounts = null;
           });
           this.getBalance(this.order.id);
         })
@@ -948,7 +947,7 @@ export default {
         admin_price: 0,
         branch_price: 0,
       };
-      if (!trade.Discounts) {
+      if (type == "discount") {
         let unit = 5000;
         let residual = data.price - data.discount;
         let difference = residual % unit;
@@ -956,7 +955,7 @@ export default {
         let branch_price = residual - admin_price;
         data.admin_price = admin_price;
         data.branch_price = branch_price;
-      } else {
+      } else if (type == "residual") {
         data.admin_price = trade.Discounts.admin_price;
         data.branch_price = trade.Discounts.branch_price;
       }
@@ -998,7 +997,7 @@ export default {
         trade.Trades.discount =
           (trade.Trades.price / 100) * trade.Trades.discount_percent;
       }
-      this.putTrade("", trade);
+      this.putTrade("discount", trade);
     },
     getUsers() {
       users(localStorage.getItem("branch_id"), 0, 50)
