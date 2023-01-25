@@ -142,7 +142,7 @@
           <td>
             <form @submit.prevent="putTrade('', item)" id="form-discount" />
             <form @submit.prevent="countPrice(item)" id="form-discount-1" />
-            <div class="input-group input-group-sm w-75 mx-auto">
+            <div class="input-group input-group-sm">
               <input
                 type="number"
                 step="any"
@@ -183,6 +183,40 @@
                 "
               />
               <div class="input-group-text">%</div>
+            </div>
+            <div class="input-group input-group-sm">
+              <input
+                type="number"
+                step="any"
+                min="0"
+                class="form-control text-center"
+                v-model="item.Discounts.admin_price"
+                @focusout="
+                  item.Discounts.branch_price =
+                    item.Trades.price -
+                    item.Trades.discount -
+                    item.Discounts.admin_price;
+                  putTrade('', item);
+                "
+                v-if="item.Discounts"
+              />
+              <div class="input-group-text" v-if="item.Discounts">adminga</div>
+              <input
+                type="number"
+                step="any"
+                min="0"
+                class="form-control text-center"
+                v-model="item.Discounts.branch_price"
+                @focusout="
+                  item.Discounts.admin_price =
+                    item.Trades.price -
+                    item.Trades.discount -
+                    item.Discounts.branch_price;
+                  putTrade('', item);
+                "
+                v-if="item.Discounts"
+              />
+              <div class="input-group-text" v-if="item.Discounts">filialga</div>
             </div>
           </td>
           <td>
@@ -378,7 +412,7 @@
                         v-model="order_confirm.money[0].paid_money"
                         @focusout="
                           count(
-                            'price',
+                            'naxt',
                             order_confirm.money[0].paid_money,
                             order_confirm.money[1].paid_money,
                             order_confirm.discount,
@@ -409,7 +443,7 @@
                         v-model="order_confirm.money[1].paid_money"
                         @focusout="
                           count(
-                            'price',
+                            'plastik',
                             order_confirm.money[0].paid_money,
                             order_confirm.money[1].paid_money,
                             order_confirm.discount,
@@ -424,7 +458,7 @@
                   </div>
                 </div>
               </div>
-              <div :class="customer_type == 'none' ? 'col-md-12' : 'col-md-6'">
+              <!-- <div :class="customer_type == 'none' ? 'col-md-12' : 'col-md-6'">
                 Chegirma summa
                 <input
                   type="number"
@@ -449,8 +483,8 @@
                       order_balance.total_price
                   "
                 />
-              </div>
-              <div class="col-md-6" v-if="customer_type !== 'none'">
+              </div> -->
+              <div class="col-md-12" v-if="customer_type !== 'none'">
                 Nasiya summa
                 <input
                   type="number"
@@ -648,6 +682,8 @@ export default {
         quantity: 1,
         price: 0,
         discount: 0,
+        order_id: 0,
+        admin_price: 0,
       },
       trades: [],
       customer_type: "",
@@ -909,7 +945,21 @@ export default {
         price: trade.Trades.price,
         discount: trade.Trades.discount,
         order_id: this.order.id,
+        admin_price: 0,
+        branch_price: 0,
       };
+      if (!trade.Discounts) {
+        let unit = 5000;
+        let residual = data.price - data.discount;
+        let difference = residual % unit;
+        let admin_price = difference ? residual - difference : residual - unit;
+        let branch_price = residual - admin_price;
+        data.admin_price = admin_price;
+        data.branch_price = branch_price;
+      } else {
+        data.admin_price = trade.Discounts.admin_price;
+        data.branch_price = trade.Discounts.branch_price;
+      }
       if (type == "<") {
         data.quantity = 1;
         status = false;
@@ -977,38 +1027,57 @@ export default {
       }
     },
     count(type, naxt, plastik, chegirma, nasiya) {
-      if (type == "price") {
-        if (naxt + plastik >= this.order_balance.total_price) {
-          this.order_confirm.discount = 0;
-          this.loan_price = 0;
-        } else if (naxt + plastik < this.order_balance.total_price) {
-          if (naxt + plastik + nasiya <= this.order_balance.total_price) {
-            this.order_confirm.discount =
-              this.order_balance.total_price - (naxt + plastik) - nasiya;
-          } else if (
-            naxt + plastik + chegirma <=
-            this.order_balance.total_price
-          ) {
-            this.loan_price =
-              this.order_balance.total_price - (naxt + plastik) - chegirma;
-          } else {
-            this.loan_price = 0;
-            this.order_confirm.discount =
-              this.order_balance.total_price - (naxt + plastik) - nasiya;
+      // if (type == "price") {
+      //   if (naxt + plastik >= this.order_balance.total_price) {
+      //     this.order_confirm.discount = 0;
+      //     this.loan_price = 0;
+      //   } else if (naxt + plastik < this.order_balance.total_price) {
+      //     if (naxt + plastik + nasiya <= this.order_balance.total_price) {
+      //       this.order_confirm.discount =
+      //         this.order_balance.total_price - (naxt + plastik) - nasiya;
+      //     } else if (
+      //       naxt + plastik + chegirma <=
+      //       this.order_balance.total_price
+      //     ) {
+      //       this.loan_price =
+      //         this.order_balance.total_price - (naxt + plastik) - chegirma;
+      //     } else {
+      //       this.loan_price = 0;
+      //       this.order_confirm.discount =
+      //         this.order_balance.total_price - (naxt + plastik) - nasiya;
+      //     }
+      //   }
+      // } else if (type == "chegirma") {
+      //   if (naxt + plastik >= this.order_balance.total_price) {
+      //     this.order_confirm.discount = 0;
+      //     this.loan_price = 0;
+      //   } else if (naxt + plastik < this.order_balance.total_price) {
+      //     if (chegirma < this.order_balance.total_price - (naxt + plastik)) {
+      //       this.loan_price =
+      //         this.order_balance.total_price - (naxt + plastik) - chegirma;
+      //     } else if (
+      //       chegirma ==
+      //       this.order_balance.total_price - (naxt + plastik)
+      //     ) {
+      //       this.loan_price = 0;
+      //     }
+      //   }
+      // }
+      if (naxt + plastik <= this.order_balance.total_price) {
+        if (this.customer_type == "none") {
+          if (naxt + plastik <= this.order_balance.total_price) {
+            if (type == "naxt") {
+              this.order_confirm.money[1].paid_money =
+                this.order_balance.total_price - naxt;
+            } else if (type == "plastik") {
+              this.order_confirm.money[0].paid_money =
+                this.order_balance.total_price - plastik;
+            }
           }
-        }
-      } else if (type == "chegirma") {
-        if (naxt + plastik >= this.order_balance.total_price) {
-          this.order_confirm.discount = 0;
-          this.loan_price = 0;
-        } else if (naxt + plastik < this.order_balance.total_price) {
-          if (chegirma < this.order_balance.total_price - (naxt + plastik)) {
-            this.loan_price =
-              this.order_balance.total_price - (naxt + plastik) - chegirma;
-          } else if (
-            chegirma ==
-            this.order_balance.total_price - (naxt + plastik)
-          ) {
+        } else {
+          if (naxt + plastik <= this.order_balance.total_price) {
+            this.loan_price = this.order_balance.total_price - (naxt + plastik);
+          } else {
             this.loan_price = 0;
           }
         }
@@ -1165,6 +1234,10 @@ export default {
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 200px;
+}
+
+td {
+  vertical-align: middle;
 }
 
 img {
