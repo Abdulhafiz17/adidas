@@ -127,9 +127,14 @@
                   step="any"
                   min="0"
                   required
+                  :disabled="disable[0]"
                   class="form-control text-center"
                   v-model="item.Trades.price"
-                  @focusout="putTrade('', item)"
+                  @click="toggleDisable(0)"
+                  @focusout="
+                    toggleDisable();
+                    putTrade('', item);
+                  "
                 />
                 <div class="input-group-append">
                   <div class="input-group-text">
@@ -148,14 +153,17 @@
                 step="any"
                 min="0"
                 required
+                :disabled="disable[1]"
                 class="form-control text-center"
                 form="form-discount"
                 v-model="item.Trades.discount"
                 @click="
-                  item.Trades.discount ? false : (item.Trades.discount = null)
+                  item.Trades.discount ? false : (item.Trades.discount = null);
+                  toggleDisable(1);
                 "
                 @focusout="
                   item.Trades.discount ? false : (item.Trades.discount = 0);
+                  toggleDisable();
                   putTrade('discount', item);
                 "
               />
@@ -167,18 +175,21 @@
                 step="any"
                 min="0"
                 required
+                :disabled="disable[2]"
                 class="form-control text-center"
                 form="form-discount-1"
                 v-model="item.Trades.discount_percent"
                 @click="
                   item.Trades.discount_percent
                     ? false
-                    : (item.Trades.discount_percent = null)
+                    : (item.Trades.discount_percent = null);
+                  toggleDisable(2);
                 "
                 @focusout="
                   item.Trades.discount_percent
                     ? false
                     : (item.Trades.discount_percent = 0);
+                  toggleDisable();
                   countPrice(item);
                 "
               />
@@ -189,13 +200,18 @@
                 type="number"
                 step="any"
                 min="0"
+                :disabled="disable[3]"
                 class="form-control text-center"
                 v-model="item.Discounts.admin_price"
-                @focusout="
+                @click="toggleDisable(3)"
+                @keyup="
                   item.Discounts.branch_price =
                     item.Trades.price -
                     item.Trades.discount -
-                    item.Discounts.admin_price;
+                    item.Discounts.admin_price
+                "
+                @focusout="
+                  toggleDisable();
                   putTrade('residual', item);
                 "
               />
@@ -204,13 +220,18 @@
                 type="number"
                 step="any"
                 min="0"
+                :disabled="disable[4]"
                 class="form-control text-center"
                 v-model="item.Discounts.branch_price"
-                @focusout="
+                @click="toggleDisable(4)"
+                @keyup="
                   item.Discounts.admin_price =
                     item.Trades.price -
                     item.Trades.discount -
-                    item.Discounts.branch_price;
+                    item.Discounts.branch_price
+                "
+                @focusout="
+                  toggleDisable();
                   putTrade('residual', item);
                 "
               />
@@ -220,15 +241,17 @@
           <td>
             <span
               :class="
-                item.Trades.price - item.Trades.discount >
-                item.Products.sotuv_narx
-                  ? 'text-success'
-                  : item.Trades.price - item.Trades.discount <=
-                      item.Products.sotuv_narx &&
-                    item.Trades.price - item.Trades.discount >=
-                      item.Products.oxirgi_narx
-                  ? 'text-warning'
-                  : 'text-danger'
+                !item.Trades.discount
+                  ? item.Trades.price - item.Trades.discount >
+                    item.Products.sotuv_narx
+                    ? 'text-success'
+                    : item.Trades.price - item.Trades.discount <=
+                        item.Products.sotuv_narx &&
+                      item.Trades.price - item.Trades.discount >=
+                        item.Products.oxirgi_narx
+                    ? 'text-warning'
+                    : 'text-danger'
+                  : ''
               "
             >
               {{
@@ -682,6 +705,7 @@ export default {
         discount: 0,
         order_id: 0,
         admin_price: 0,
+        branch_price: 0,
       },
       trades: [],
       customer_type: "",
@@ -712,6 +736,7 @@ export default {
       users: [],
       order_id: null,
       order_check: false,
+      disable: [false, false, false, false, false],
     };
   },
   created() {
@@ -771,6 +796,23 @@ export default {
     },
   },
   methods: {
+    toggleDisable(index) {
+      let timeout;
+      clearTimeout(timeout);
+      if (index !== undefined) {
+        for (let i = 0; i < this.disable.length; i++) {
+          if (index !== i) {
+            this.disable[i] = true;
+          }
+        }
+      } else {
+        timeout = setTimeout(() => {
+          for (let i = 0; i < this.disable.length; i++) {
+            this.disable[i] = false;
+          }
+        }, 100);
+      }
+    },
     setloading(loading) {
       this.$emit("setloading", loading);
     },
@@ -937,7 +979,7 @@ export default {
     },
     putTrade(type, trade) {
       this.$emit("setloading", true);
-      let status = Boolean;
+      let status = null;
       let data = {
         code: trade.Trades.code,
         quantity: null,
@@ -947,18 +989,6 @@ export default {
         admin_price: 0,
         branch_price: 0,
       };
-      if (type == "discount") {
-        let unit = 5000;
-        let residual = data.price - data.discount;
-        let difference = residual % unit;
-        let admin_price = difference ? residual - difference : residual - unit;
-        let branch_price = residual - admin_price;
-        data.admin_price = admin_price;
-        data.branch_price = branch_price;
-      } else if (type == "residual") {
-        data.admin_price = trade.Discounts.admin_price;
-        data.branch_price = trade.Discounts.branch_price;
-      }
       if (type == "<") {
         data.quantity = 1;
         status = false;
@@ -973,6 +1003,18 @@ export default {
         // data.quantity = trade.sum_quantity;
         data.quantity = 0;
         status = true;
+      }
+      if (type == "discount") {
+        let unit = 5000;
+        let residual = data.price - data.discount;
+        let difference = residual % unit;
+        let admin_price = difference ? residual - difference : residual - unit;
+        let branch_price = residual - admin_price;
+        data.admin_price = admin_price;
+        data.branch_price = branch_price;
+      } else {
+        data.admin_price = trade.Discounts.admin_price;
+        data.branch_price = trade.Discounts.branch_price;
       }
       updateTrade(status, data)
         .then((Response) => {
