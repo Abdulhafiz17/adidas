@@ -82,20 +82,21 @@
               </strong>
             </span>
             <span>
+              Umumiy tan narx:
+              <strong>
+                {{
+                  _.format(item.trade_total_tan_narx) + " " + branch_currency
+                }}
+              </strong>
+            </span>
+            <span>
               Vozvrat:
               <strong>
                 {{ _.format(item.returned_price) + " " + branch_currency }}
               </strong>
             </span>
             <hr />
-            <span>
-              Savdo:
-              <strong>
-                {{ _.format(item.savdo_umumiy) + " " + branch_currency }}
-              </strong>
-            </span>
-            <span
-              :title="
+            <!-- :title="
                 'Buyurtma chegirmasi: ' +
                 _.format(item.order_total_discount) +
                 ' ' +
@@ -104,33 +105,16 @@
                 _.format(item.trade_total_discount) +
                 ' ' +
                 branch_currency
-              "
-            >
-              Chegirma:
+              " -->
+            <span>
+              Chegirmadan qolgan summa:
               <strong>
                 {{
-                  _.format(
-                    item.order_total_discount + item.trade_total_discount
-                  ) +
-                  " " +
-                  branch_currency
+                  _.format(item.trade_total_discount) + " " + branch_currency
                 }}
               </strong>
             </span>
             <hr />
-            <span>
-              Kassadagi pul:
-              <strong>
-                {{
-                  _.format(
-                    item.savdo_umumiy -
-                      (item.order_total_discount + item.trade_total_discount)
-                  ) +
-                  " " +
-                  branch_currency
-                }}
-              </strong>
-            </span>
             <span>
               Daromad:
               <strong
@@ -199,7 +183,7 @@
         </div>
         <div class="modal-body">
           <div class="responsive" style="min-height: 60vh" v-if="day">
-            <ul
+            <!-- <ul
               class="nav nav-pills nav-justified m-2"
               id="pills-tab"
               role="tablist"
@@ -232,7 +216,7 @@
                   Kategoriyalar
                 </button>
               </li>
-            </ul>
+            </ul> -->
             <div class="tab-content" id="pills-tabContent">
               <div
                 class="tab-pane fade show active"
@@ -263,7 +247,7 @@
                   Ma'lumot mavjud emas
                 </strong>
               </div>
-              <div
+              <!-- <div
                 class="tab-pane fade"
                 :id="`pills-category`"
                 role="tabpanel"
@@ -284,7 +268,7 @@
                 <strong v-if="!day.trade_cat_data.length">
                   Ma'lumot mavjud emas
                 </strong>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
