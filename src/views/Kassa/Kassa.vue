@@ -1013,8 +1013,10 @@ export default {
         data.admin_price = admin_price;
         data.branch_price = branch_price;
       } else {
-        data.admin_price = trade.Discounts.admin_price;
-        data.branch_price = trade.Discounts.branch_price;
+        if (trade.Discounts) {
+          data.admin_price = trade.Discounts.admin_price;
+          data.branch_price = trade.Discounts.branch_price;
+        }
       }
       updateTrade(status, data)
         .then((Response) => {
@@ -1022,7 +1024,9 @@ export default {
         })
         .catch((error) => {
           this.$emit("setloading", false);
-          catchError(error);
+          catchError(error).then(() => {
+            this.getTrades(this.order);
+          });
         });
     },
     countPercent(trade) {

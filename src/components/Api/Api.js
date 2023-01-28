@@ -35,7 +35,7 @@ export function catchError(error) {
       }
     });
   } else if (error.response.status == 400) {
-    swal({
+    return swal({
       icon: "warning",
       title: error.response.data.detail,
       timer: 2500,

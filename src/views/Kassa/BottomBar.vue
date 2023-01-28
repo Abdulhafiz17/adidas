@@ -8,14 +8,14 @@
       >
         <span class="far fa-circle-check" /> Tasdiqlash
       </button>
-      <button
+      <!-- <button
         class="btn btn-sm btn-outline-secondary"
         data-toggle="modal"
         data-target="#dailyReport"
         @click="getDailyReport()"
       >
         <span class="fa fa-history" /> Kunlik hisobot
-      </button>
+      </button> -->
       <!-- <router-link to="/expense" class="btn btn-sm btn-outline-secondary">
         <span class="fa fa-wallet" /> Chiqim
       </router-link> -->
@@ -162,7 +162,7 @@ div.main {
 }
 
 .dark div.main {
-  background: rgba(0, 0, 0, .2);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 nav {
