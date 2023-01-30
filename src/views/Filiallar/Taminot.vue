@@ -340,7 +340,7 @@ export default {
         "kutish",
         page,
         limit,
-        0,
+        this.$route.params.id,
         this.from_date,
         this.to_date
       )
