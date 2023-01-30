@@ -88,14 +88,14 @@
                   <i class="fa fa-chart-line" />
                 </router-link>
               </div>
-              <div class="col my-1">
+              <!-- <div class="col my-1">
                 <router-link
                   :to="`/hodimlar/${item.id}`"
                   class="btn btn-sm btn-block btn-outline-primary"
                 >
                   <i class="fa fa-user-group" />
                 </router-link>
-              </div>
+              </div> -->
               <div class="col my-1">
                 <router-link
                   :to="`/filial/${item.id}`"
