@@ -5,6 +5,7 @@
         class="btn btn-lg btn-outline-success"
         data-toggle="modal"
         data-target="#confirm"
+        confirm-modal-button
       >
         <span class="far fa-circle-check" /> Tasdiqlash
       </button>

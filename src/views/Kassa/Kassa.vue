@@ -753,6 +753,9 @@ export default {
     if (this.order) {
       document.querySelector("#barcode").focus();
     }
+    document.querySelector("[confirm-modal-button]").onclick = () => {
+      this.order_confirm.money[0].paid_money = this.order_balance.total_price;
+    };
   },
   watch: {
     customer_type(customer_type) {
