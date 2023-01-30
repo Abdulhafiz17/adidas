@@ -145,7 +145,7 @@
             </form>
           </td>
           <td>
-            <form @submit.prevent="putTrade('', item)" id="form-discount" />
+            <!-- <form @submit.prevent="putTrade('', item)" id="form-discount" /> -->
             <form @submit.prevent="countPrice(item)" id="form-discount-1" />
             <div class="input-group input-group-sm">
               <input
@@ -195,7 +195,14 @@
               />
               <div class="input-group-text">%</div>
             </div>
-            <div class="input-group input-group-sm" v-if="item.Discounts">
+            <div
+              class="input-group input-group-sm"
+              v-if="
+                item.Discounts &&
+                item.Trades.price - item.Trades.discount <
+                  item.Products.price * item.currency_pr.price
+              "
+            >
               <input
                 type="number"
                 step="any"
@@ -1005,13 +1012,26 @@ export default {
         status = true;
       }
       if (type == "discount") {
-        let unit = 5000;
-        let residual = data.price - data.discount;
-        let difference = residual % unit;
-        let admin_price = difference ? residual - difference : residual - unit;
-        let branch_price = residual - admin_price;
-        data.admin_price = admin_price;
-        data.branch_price = branch_price;
+        if (
+          trade.Trades.price - trade.Trades.discount <
+          trade.Products.price * trade.currency_pr.price
+        ) {
+          let unit = 5000;
+          let residual = data.price - data.discount;
+          let difference = residual % unit;
+          let admin_price = difference
+            ? residual - difference
+            : residual - unit;
+          let branch_price = residual - admin_price;
+          data.admin_price = admin_price;
+          data.branch_price = branch_price;
+        } else {
+          data.admin_price = trade.Products.price * trade.currency_pr.price;
+          data.branch_price =
+            trade.Trades.price -
+            trade.Trades.discount -
+            trade.Products.price * trade.currency_pr.price;
+        }
       } else {
         if (trade.Discounts) {
           data.admin_price = trade.Discounts.admin_price;
