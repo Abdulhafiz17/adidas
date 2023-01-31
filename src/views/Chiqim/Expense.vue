@@ -2,7 +2,7 @@
   <h3><span class="fa fa-wallet" /> Chiqim</h3>
   <div class="row">
     <div class="col-md"></div>
-    <div class="col-md my-1">
+    <div class="col-md my-1" v-if="role == 'branch_admin'">
       <div class="btn-group btn-group-sm">
         <button
           class="btn btn-outline-secondary float-right"
@@ -349,6 +349,7 @@ export default {
   components: { Variable, Fixed },
   data() {
     return {
+      role: localStorage["role"],
       page: 0,
       pages: 1,
       limit: 100,
@@ -485,5 +486,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

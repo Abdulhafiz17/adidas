@@ -23,7 +23,10 @@
       </button>
     </div>
   </div>
-  <div class="table-responsive">
+  <div
+    class="table-responsive"
+    :style="'max-height:' + role == 'branch_admin' ? '65vh' : '70vh'"
+  >
     <table class="table table-sm table-hover">
       <thead>
         <tr>
@@ -106,6 +109,7 @@ export default {
   emits: ["setloading"],
   data() {
     return {
+      role: localStorage["role"],
       page: 0,
       pages: 1,
       limit: 50,
@@ -120,7 +124,13 @@ export default {
   methods: {
     get(page, limit) {
       this.$emit("setloading", true);
-      variableExpenses(page, limit, this.from_time, this.to_time)
+      variableExpenses(
+        page,
+        limit,
+        this.$route.params.id,
+        this.from_time,
+        this.to_time
+      )
         .then((Response) => {
           this.page = Response.data.current_page;
           this.pages = Response.data.pages;
@@ -138,12 +148,11 @@ export default {
 
 <style scoped>
 .input-group {
-    justify-content: center;
+  justify-content: center;
 }
 
 .table-responsive {
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: 65vh;
 }
 </style>

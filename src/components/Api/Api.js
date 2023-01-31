@@ -456,23 +456,25 @@ export function removeSupply(id) {
 export function fixedExpenses() {
   return instance.get("get_fixed_expenses");
 }
-export function variableExpenses(page, limit, from_time, to_time) {
+export function variableExpenses(page, limit, branch_id, from_time, to_time) {
   if (from_time && to_time) {
     return instance.get(
-      `get_variable_expenses?from_time=${from_time}&to_time=${to_time}&page=${page}&limit=${limit}`
+      `get_variable_expenses?branch_id=${branch_id}&from_time=${from_time}&to_time=${to_time}&page=${page}&limit=${limit}`
     );
   } else {
-    return instance.get(`get_variable_expenses?page=${page}&limit=${limit}`);
+    return instance.get(
+      `get_variable_expenses?branch_id=${branch_id}&page=${page}&limit=${limit}`
+    );
   }
 }
-export function fixedExpense(page, limit, id, from_time, to_time) {
+export function fixedExpense(page, limit, branch_id, id, from_time, to_time) {
   if (from_time && to_time) {
     return instance.get(
-      `fixed_expenses_get?from_time=${from_time}&to_time=${to_time}&fixed_expense_id=${id}&page=${page}&limit=${limit}`
+      `fixed_expenses_get?branch_id=${branch_id}&from_time=${from_time}&to_time=${to_time}&fixed_expense_id=${id}&page=${page}&limit=${limit}`
     );
   } else {
     return instance.get(
-      `fixed_expenses_get?fixed_expense_id=${id}&page=${page}&limit=${limit}`
+      `fixed_expenses_get?branch_id=${branch_id}&fixed_expense_id=${id}&page=${page}&limit=${limit}`
     );
   }
 }
