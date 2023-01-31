@@ -438,7 +438,7 @@
                         "
                         class="form-control form-control-sm"
                         v-model="order_confirm.money[0].paid_money"
-                        @focusout="
+                        @keyup="
                           count(
                             'naxt',
                             order_confirm.money[0].paid_money,
@@ -469,7 +469,7 @@
                         "
                         class="form-control form-control-sm"
                         v-model="order_confirm.money[1].paid_money"
-                        @focusout="
+                        @keyup="
                           count(
                             'plastik',
                             order_confirm.money[0].paid_money,
@@ -1097,59 +1097,27 @@ export default {
       }
     },
     count(type, naxt, plastik, chegirma, nasiya) {
-      // if (type == "price") {
-      //   if (naxt + plastik >= this.order_balance.total_price) {
-      //     this.order_confirm.discount = 0;
-      //     this.loan_price = 0;
-      //   } else if (naxt + plastik < this.order_balance.total_price) {
-      //     if (naxt + plastik + nasiya <= this.order_balance.total_price) {
-      //       this.order_confirm.discount =
-      //         this.order_balance.total_price - (naxt + plastik) - nasiya;
-      //     } else if (
-      //       naxt + plastik + chegirma <=
-      //       this.order_balance.total_price
-      //     ) {
-      //       this.loan_price =
-      //         this.order_balance.total_price - (naxt + plastik) - chegirma;
-      //     } else {
-      //       this.loan_price = 0;
-      //       this.order_confirm.discount =
-      //         this.order_balance.total_price - (naxt + plastik) - nasiya;
-      //     }
-      //   }
-      // } else if (type == "chegirma") {
-      //   if (naxt + plastik >= this.order_balance.total_price) {
-      //     this.order_confirm.discount = 0;
-      //     this.loan_price = 0;
-      //   } else if (naxt + plastik < this.order_balance.total_price) {
-      //     if (chegirma < this.order_balance.total_price - (naxt + plastik)) {
-      //       this.loan_price =
-      //         this.order_balance.total_price - (naxt + plastik) - chegirma;
-      //     } else if (
-      //       chegirma ==
-      //       this.order_balance.total_price - (naxt + plastik)
-      //     ) {
-      //       this.loan_price = 0;
-      //     }
-      //   }
-      // }
-      if (naxt + plastik <= this.order_balance.total_price) {
-        if (this.customer_type == "none") {
-          if (naxt + plastik <= this.order_balance.total_price) {
-            if (type == "naxt") {
-              this.order_confirm.money[1].paid_money =
-                this.order_balance.total_price - naxt;
-            } else if (type == "plastik") {
-              this.order_confirm.money[0].paid_money =
-                this.order_balance.total_price - plastik;
-            }
-          }
-        } else {
-          if (naxt + plastik <= this.order_balance.total_price) {
-            this.loan_price = this.order_balance.total_price - (naxt + plastik);
+      if (this.customer_type == "none") {
+        if (type == "naxt") {
+          if (naxt >= this.order_balance.total_price) {
+            this.order_confirm.money[1].paid_money = 0;
           } else {
-            this.loan_price = 0;
+            this.order_confirm.money[1].paid_money =
+              this.order_balance.total_price - naxt;
           }
+        } else if (type == "plastik") {
+          if (plastik >= this.order_balance.total_price) {
+            this.order_confirm.money[0].paid_money = 0;
+          } else {
+            this.order_confirm.money[0].paid_money =
+              this.order_balance.total_price - plastik;
+          }
+        }
+      } else {
+        if (naxt + plastik <= this.order_balance.total_price) {
+          this.loan_price = this.order_balance.total_price - (naxt + plastik);
+        } else {
+          this.loan_price = 0;
         }
       }
     },
