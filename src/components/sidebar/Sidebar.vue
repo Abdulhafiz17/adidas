@@ -110,7 +110,7 @@ export default {
 
         <router-link
           class="SidebarLink"
-          to="/expense"
+          :to="`/admin/${branch_id}`"
           v-if="role === 'branch_admin'"
         >
           <i class="icon"><span class="fa fa-wallet" /></i>

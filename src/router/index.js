@@ -158,7 +158,7 @@ let routes = [
     component: () => import("../views/Categories/CategoryProducts.vue"),
   },
   {
-    path: "/expense",
+    path: "/expense/:id",
     name: "expense",
     meta: { requiresAuth: true, title: "Chiqim" },
     component: () => import("../views/Chiqim/Expense.vue"),

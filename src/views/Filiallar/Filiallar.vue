@@ -98,6 +98,14 @@
               </div> -->
               <div class="col my-1">
                 <router-link
+                  :to="`/expense/${item.id}`"
+                  class="btn btn-sm btn-block btn-outline-primary"
+                >
+                  <i class="fa fa-wallet" />
+                </router-link>
+              </div>
+              <div class="col my-1">
+                <router-link
                   :to="`/filial/${item.id}`"
                   class="btn btn-sm btn-block btn-outline-secondary"
                 >
