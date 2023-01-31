@@ -1065,6 +1065,8 @@ export default {
       if (trade.Trades.discount_percent) {
         trade.Trades.discount =
           (trade.Trades.price / 100) * trade.Trades.discount_percent;
+      } else {
+        trade.Trades.discount = 0;
       }
       this.putTrade("discount", trade);
     },
