@@ -235,6 +235,24 @@
                       </option>
                     </select>
                   </div>
+                  <div class="input-group-text">admin valyutasi</div>
+                  <div class="input-group-append">
+                    <select
+                      class="form-control form-control-sm"
+                      required
+                      v-model="payToFixedExpense.admin_currency"
+                      @click="kurslar.length ? '' : getCurrency()"
+                    >
+                      <option hidden value="">valyuta</option>
+                      <option
+                        v-for="item in kurslar"
+                        :key="item"
+                        :value="item.id"
+                      >
+                        {{ item.currency }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
               </div>
               <div class="col-md-10 mx-auto" v-if="payToFixedExpense.source">
@@ -289,6 +307,24 @@
                       class="form-select form-select-sm"
                       required
                       v-model="payToVariableExpense.currency_id"
+                      @click="kurslar.length ? '' : getCurrency()"
+                    >
+                      <option hidden value="">valyuta</option>
+                      <option
+                        v-for="item in kurslar"
+                        :key="item"
+                        :value="item.id"
+                      >
+                        {{ item.currency }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="input-group-text">admin valyutasi</div>
+                  <div class="input-group-append">
+                    <select
+                      class="form-control form-control-sm"
+                      required
+                      v-model="payToVariableExpense.admin_currency"
                       @click="kurslar.length ? '' : getCurrency()"
                     >
                       <option hidden value="">valyuta</option>
@@ -365,12 +401,14 @@ export default {
         currency_id: "",
         source: "",
         comment: "",
+        admin_currency: "",
       },
       payToVariableExpense: {
         price: null,
         currency_id: "",
         source: 0,
         comment: "",
+        admin_currency: "",
       },
     };
   },
