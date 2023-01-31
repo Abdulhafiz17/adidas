@@ -59,6 +59,7 @@
             <th>Izoh</th>
             <th>Hodim</th>
             <th>Sana</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -76,6 +77,15 @@
               {{
                 item.time.replace("T", " ").substring(0, item.time.length - 3)
               }}
+            </td>
+            <td>
+              <button
+                class="btn btn-sm btn-outline-danger"
+                @click="removeExpense(item.id)"
+                v-if="!item.status"
+              >
+                <i class="far fa-circle-xmark"></i>
+              </button>
             </td>
           </tr>
         </tbody>
@@ -195,6 +205,7 @@ import {
   branch,
   catchError,
   payForAdmin,
+  removeAdminExpense,
   success,
 } from "@/components/Api/Api";
 export default {
@@ -289,6 +300,19 @@ export default {
         .catch((error) => {
           this.$emit("setloading", false);
           catchError(error);
+        });
+    },
+    removeExpense(id) {
+      this.$emit("setloading", true);
+      removeAdminExpense(id)
+        .then((res) => {
+          success().then(() => {
+            this.getExpenses(0, 25);
+          });
+        })
+        .catch((err) => {
+          this.$emit("setloading", false);
+          catchError(err);
         });
     },
   },
