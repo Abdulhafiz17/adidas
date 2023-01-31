@@ -538,6 +538,9 @@ export function adminExpenses(branch_id, from_time, to_time, page, limit) {
     );
   }
 }
+export function confirmAdminExpense(expense_id) {
+  return instance.put(`confirm_pay_to_admin/${expense_id}`);
+}
 
 // distribute
 

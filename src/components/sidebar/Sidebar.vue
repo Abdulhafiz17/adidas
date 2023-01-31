@@ -15,7 +15,6 @@ export default {
   },
   created() {
     api.branch(this.branch_id).then((res) => {
-      console.log(res.data);
       this.logo = res.data.logo;
     });
   },
@@ -116,7 +115,7 @@ export default {
 
         <router-link
           class="SidebarLink"
-          :to="`/admin/${branch_id}`"
+          :to="`/expense/${branch_id}`"
           v-if="role === 'branch_admin'"
         >
           <i class="icon"><span class="fa fa-wallet" /></i>

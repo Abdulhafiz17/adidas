@@ -32,6 +32,7 @@
             <th>Izoh</th>
             <th>Hodim</th>
             <th>Sana</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -49,6 +50,15 @@
               {{
                 item.time.replace("T", " ").substring(0, item.time.length - 3)
               }}
+            </td>
+            <td>
+              <button
+                class="btn btn-sm btn-outline-success"
+                @click="confirmExpense(item.id)"
+                v-if="!item.status"
+              >
+                <i class="far fa-circle-check"></i>
+              </button>
             </td>
           </tr>
         </tbody>
@@ -109,7 +119,13 @@
 </template>
 
 <script>
-import { adminExpenses, branch, catchError } from "@/components/Api/Api";
+import {
+  adminExpenses,
+  branch,
+  catchError,
+  confirmAdminExpense,
+  success,
+} from "@/components/Api/Api";
 export default {
   name: "Tolov",
   emits: ["setloading"],
@@ -150,7 +166,7 @@ export default {
               }
             });
           } else {
-            this.$emit("setloading", false)
+            this.$emit("setloading", false);
           }
         })
         .catch((error) => {
@@ -176,6 +192,19 @@ export default {
         .catch((error) => {
           this.$emit("setloading", false);
           catchError(error);
+        });
+    },
+    confirmExpense(id) {
+      this.$emit("setloading", true);
+      confirmAdminExpense(id)
+        .then((res) => {
+          success().then(() => {
+            this.getExpenses(0, 25);
+          });
+        })
+        .catch((err) => {
+          this.$emit("setloading", false);
+          catchError(err);
         });
     },
   },
