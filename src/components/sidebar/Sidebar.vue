@@ -1,18 +1,24 @@
 <script>
 import { sidebarWidth, collapsed, toggleSidebar } from "./state";
+import * as api from "../Api/Api";
 export default {
   components: { toggleSidebar },
   data() {
     return {
       role: localStorage.getItem("role"),
       branch_id: localStorage.getItem("branch_id"),
-      logo: localStorage.getItem("main_logo"),
+      logo: null,
     };
   },
   setup() {
     return { collapsed, sidebarWidth, toggleSidebar };
   },
-  mounted() {},
+  created() {
+    api.branch(this.branch_id).then((res) => {
+      console.log(res.data);
+      this.logo = res.data.logo;
+    });
+  },
   methods: {},
 };
 </script>
@@ -20,12 +26,12 @@ export default {
 <template>
   <transition name="fade-SidebarLink">
     <div class="sidebar">
-      <!-- <div class="sidebar-logo" v-if="logo">
-          <img
-            :src="`https://adidas.crud.uz/photos/${logo}`"
-            :alt="`https://adidas.crud.uz/photos/${logo}`"
-          />
-        </div> -->
+      <div class="sidebar-logo" v-if="logo">
+        <img
+          :src="`https://adidas-api.crud.uz/uploaded_files/${logo.logo}`"
+          :alt="`https://adidas-api.crud.uz/uploaded_files/${logo.logo}`"
+        />
+      </div>
       <div class="sidebar-link">
         <router-link
           class="SidebarLink"

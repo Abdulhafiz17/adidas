@@ -41,7 +41,7 @@
                 })
               "
               :src="
-                'https://adidas.crud.uz/photos/' +
+                'https://adidas-api.crud.uz/uploaded_files/' +
                 logos.find((logo) => {
                   return logo.source == item.id;
                 }).logo
