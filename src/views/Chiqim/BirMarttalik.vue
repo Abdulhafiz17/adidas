@@ -31,6 +31,7 @@
       <thead>
         <tr>
           <th>Summa</th>
+          <th>Admin summa</th>
           <th>Izoh</th>
           <th>Kim tomonidan</th>
           <th>Sana</th>
@@ -39,12 +40,16 @@
       <tbody>
         <tr v-for="item in history" :key="item">
           <td>
-            {{ Intl.NumberFormat().format(item.price) }}
-            {{ item.currency.currency }}
+            {{ Intl.NumberFormat().format(item.Expenses.price) }}
+            {{ item.Expenses.currency.currency }}
           </td>
-          <td>{{ item.comment }}</td>
-          <td>{{ item.user.name }}</td>
-          <td>{{ item.time.replace("T", " ") }}</td>
+          <td>
+            {{ Intl.NumberFormat().format(item.Expenses.for_admin_price) }}
+            {{ item.Currencies.currency }}
+          </td>
+          <td>{{ item.Expenses.comment }}</td>
+          <td>{{ item.Expenses.user.name }}</td>
+          <td>{{ item.Expenses.time.replace("T", " ") }}</td>
         </tr>
       </tbody>
       <tfoot>

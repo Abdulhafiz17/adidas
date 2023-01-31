@@ -44,6 +44,7 @@
         <tr>
           <th>Chiqim</th>
           <th>Summa</th>
+          <th>Admin summa</th>
           <th>Izoh</th>
           <th>Kim tomonidan</th>
           <th>Sana</th>
@@ -55,6 +56,10 @@
           <td>
             {{ Intl.NumberFormat().format(item.Expenses.price) }}
             {{ item.Expenses.currency.currency }}
+          </td>
+          <td>
+            {{ Intl.NumberFormat().format(item.Expenses.for_admin_price) }}
+            {{ item.Currencies?.currency }}
           </td>
           <td>{{ item.Expenses.comment }}</td>
           <td>{{ item.Expenses.user.name }}</td>
