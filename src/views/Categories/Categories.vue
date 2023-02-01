@@ -361,8 +361,8 @@
                 <img :src="`${url_to_files}/${logo}`" :alt="logo" />
               </div>
               <div id="tag_address">
-                <div>ADIDAS ANDIJON MASHRAB 62</div>
-                <div>NAVRUZ MALL C BLOK ГФ 14</div>
+                <div>Adidas Andijon Navruz MALL</div>
+                <div>{{ formatPhoneNumber(phone) }} C Blok Гф 14</div>
                 <div>
                   {{
                     categories.find(
@@ -393,6 +393,11 @@
             </div>
             <div id="tag_footer">
               <img id="barcode" />
+              <div>
+                {{ String(product.Products.code).substring(0, 1) }}
+                <u>{{ String(product.Products.code).substring(1, 5) }}</u>
+                {{ String(product.Products.code).substring(5) }}
+              </div>
             </div>
           </div>
         </div>
@@ -503,6 +508,7 @@ export default {
     return {
       url_to_files,
       logo: localStorage["branch_logo"],
+      phone: localStorage["branch_phone"],
       search: "",
       page: 0,
       pages: 1,
@@ -524,6 +530,18 @@ export default {
     this.getBalance(this.page, this.limit);
   },
   methods: {
+    formatPhoneNumber(number) {
+      return String(
+        "(" +
+          String(number).substr(0, 2) +
+          ") " +
+          String(number).substr(2, 3) +
+          " " +
+          String(number).substr(5, 2) +
+          " " +
+          String(number).substr(7, 2)
+      );
+    },
     getBalance(page, limit) {
       this.$emit("setloading", true);
       productsSumPrice()
@@ -575,6 +593,7 @@ export default {
           width: 2,
           height: 30,
           margin: 1,
+          displayValue: false,
         });
       }, 100);
     },
@@ -656,6 +675,9 @@ export default {
         }
         #tag_footer {
           height: 1.5cm;
+        }
+        #tag_footer div {
+          font-size: 18px;
         }
       </style>`;
       winPrint.document.body.innerHTML = price_tag;
@@ -804,6 +826,9 @@ export default {
 }
 #tag_footer {
   height: 1.5cm;
+}
+#tag_footer div {
+  font-size: 18px;
 }
 /* #barcode {
   border: thin dotted black;
