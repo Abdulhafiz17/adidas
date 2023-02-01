@@ -17,6 +17,7 @@ export default {
     api.branch(this.branch_id).then((res) => {
       this.logo = res.data.logo;
       localStorage.setItem("branch_logo", res.data.logo.logo);
+      localStorage.setItem("branch_phone", res.data.branch.phone);
     });
   },
   methods: {},
