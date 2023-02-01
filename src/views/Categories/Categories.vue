@@ -356,25 +356,49 @@
       <div class="modal-content">
         <div class="modal-body">
           <div id="tag" v-if="product">
-            <div id="tag_body">
-              <span>
-                <strong>Artikul </strong> {{ product.Products.articul }}
-              </span>
-              <span>
-                <strong>O'lcham </strong> {{ product.Products.size }}
-              </span>
-              <span>
-                <strong>Narx </strong>
-                {{ Intl.NumberFormat().format(product.Products.vitrina_narx) }}
-                {{ product.Products.currency_savdo.currency }}
-              </span>
+            <div id="tag_header">
+              <div id="tag_logo">
+                <img :src="`${url_to_files}/${logo}`" :alt="logo" />
+              </div>
+              <div id="tag_address">
+                <div>ADIDAS ANDIJON MASHRAB 62</div>
+                <div>NAVRUZ MALL C BLOK ГФ 14</div>
+                <div>
+                  {{
+                    categories.find(
+                      ({ Categories }) =>
+                        Categories.id == product.Products.category_id
+                    ).Categories.name
+                  }}
+                </div>
+              </div>
             </div>
-            <img id="barcode" />
+            <div id="tag_body">
+              <div>
+                <div>ART: {{ product.Products.articul }}</div>
+                <div>
+                  SIZE:
+                  <span>{{ product.Products.size }}</span>
+                </div>
+              </div>
+              <div>
+                PRICE:
+                <span>
+                  {{
+                    Intl.NumberFormat().format(product.Products.vitrina_narx)
+                  }}
+                </span>
+                {{ product.Products.currency_savdo.currency.toUpperCase() }}
+              </div>
+            </div>
+            <div id="tag_footer">
+              <img id="barcode" />
+            </div>
           </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-outline-primary" @click="printTag()">
-            <i class="fa fa-print"/>
+            <i class="fa fa-print" />
           </button>
         </div>
       </div>
@@ -461,6 +485,7 @@
 
 <script>
 import {
+  url_to_files,
   catchError,
   categories,
   photo,
@@ -476,6 +501,8 @@ export default {
   emits: ["setloading"],
   data() {
     return {
+      url_to_files,
+      logo: localStorage["branch_logo"],
       search: "",
       page: 0,
       pages: 1,
@@ -498,10 +525,10 @@ export default {
   },
   methods: {
     getBalance(page, limit) {
-      this.$emit("setloading", true)
+      this.$emit("setloading", true);
       productsSumPrice()
         .then((Response) => {
-          this.balance = Response.data
+          this.balance = Response.data;
           this.get(page, limit);
         })
         .catch((error) => {
@@ -547,7 +574,94 @@ export default {
           // format: "CODE128",
           width: 2,
           height: 30,
+          margin: 1,
         });
+      }, 100);
+    },
+    printTag() {
+      let price_tag = document.getElementById("tag").outerHTML;
+      let winPrint = window.open("", "_blank");
+      winPrint.document.querySelector("head").innerHTML = `
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        #tag {
+          width: 6cm;
+          height: 4cm;
+          color: black;
+          background: white;
+          text-align: center;
+          font-size: x-small;
+        }
+        #tag_header {
+          height: 1.5cm;
+          display: flex;
+        }
+        #tag_header > * {
+          height: 100%;
+        }
+        #tag_logo {
+          width: 30%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        #tag_logo img {
+          width: 80%;
+          height: 80%;
+          object-fit: contain;
+        }
+        #tag_address {
+          width: 70%;
+        }
+        #tag_address > * {
+          width: 100%;
+          height: 33.3%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        #tag_body {
+          height: 1cm;
+          font-weight: 600;
+        }
+        #tag_body > * {
+          width: 100%;
+          height: 50%;
+        }
+        #tag_body > *:first-of-type {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        #tag_body > *:first-of-type > * {
+          width: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        #tag_body > *:first-of-type span {
+          margin: 0 3px;
+          padding: 3px;
+          color: white;
+          background-color: black;
+          border-radius: 3px;
+        }
+        #tag_body > *:last-of-type span {
+          font-size: 13px;
+          font-weight: 700;
+        }
+        #tag_footer {
+          height: 1.5cm;
+        }
+      </style>`;
+      winPrint.document.body.innerHTML = price_tag;
+      setTimeout(() => {
+        winPrint.print();
+        winPrint.close();
       }, 100);
     },
     getPhoto(product) {
@@ -625,19 +739,75 @@ export default {
 #tag {
   width: 6cm;
   height: 4cm;
-  background: white;
   color: black;
+  background: white;
+  text-align: center;
+  font-size: x-small;
 }
-#tag_body {
-  min-height: 50%;
+#tag_header {
+  height: 1.5cm;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+}
+#tag_header > * {
+  height: 100%;
+}
+#tag_logo {
+  width: 30%;
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
-#barcode {
-  border: 1px dotted black;
+#tag_logo img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
 }
+#tag_address {
+  width: 70%;
+}
+#tag_address > * {
+  width: 100%;
+  height: 33.3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#tag_body {
+  height: 1cm;
+  font-weight: 600;
+}
+#tag_body > * {
+  width: 100%;
+  height: 50%;
+}
+#tag_body > *:first-of-type {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#tag_body > *:first-of-type > * {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#tag_body > *:first-of-type span {
+  margin: 0 3px;
+  padding: 3px;
+  color: white;
+  background-color: black;
+  border-radius: 3px;
+}
+#tag_body > *:last-of-type span {
+  font-size: 13px;
+  font-weight: 700;
+}
+#tag_footer {
+  height: 1.5cm;
+}
+/* #barcode {
+  border: thin dotted black;
+} */
 
 .modal-body .row {
   overflow-x: hidden;

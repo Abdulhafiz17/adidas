@@ -9,6 +9,8 @@ const instance = axios.create({
   },
 });
 
+export const url_to_files = "https://adidas-api.crud.uz/uploaded_files";
+
 export function success(index) {
   if (index !== undefined) {
     document.querySelectorAll("[data-dismiss]")[index].click();
