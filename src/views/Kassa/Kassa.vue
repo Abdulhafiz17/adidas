@@ -570,63 +570,6 @@
       </div>
     </div>
   </div>
-
-  <button
-    v-show="false"
-    data-toggle="modal"
-    data-target="#modal-check"
-    modal-check-button
-  ></button>
-
-  <div class="modal fade" id="modal-check">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-body">
-          <div id="order-check">
-            <div class="check-img">
-              <img :src="`${url_to_files}/${logo}`" :alt="logo" />
-            </div>
-            <div class="news">Yangiliklardan habardor bo'ling !</div>
-            <div class="social">
-              <div><i class="fab fa-telegram-plane"></i> adidas_andijon</div>
-              <div><i class="fab fa-instagram"></i> adidas.navruzmall</div>
-              <div>
-                <i class="fa fa-phone"></i> +998 {{ formatPhoneNumber(phone) }}
-              </div>
-            </div>
-            <div class="news">Будьте в курсе новостей !</div>
-            <div class="date">
-              <b>{{ date }}</b>
-            </div>
-            <hr />
-            <div class="mini-view">
-              <div>Sotuvchi:</div>
-              <div>Mahsulotlar soni:</div>
-              <div>Mijoz:</div>
-            </div>
-            <hr />
-            <div class="products">
-              <div>product</div>
-              <div>quantity</div>
-              <div>price</div>
-            </div>
-            <hr />
-            <div class="sum">
-              <div>Chegirmasiz summa:</div>
-              <div>Chegirma summa:</div>
-              <div>Jami summa:</div>
-            </div>
-            <hr />
-            <div class="footer">
-              <div>Haridingiz uchun rahmat !</div>
-              <div>Thank you for your purchase !</div>
-              <div>Спасибо за покупку !</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -658,10 +601,6 @@ export default {
   components: { Bar },
   data() {
     return {
-      url_to_files,
-      logo: localStorage["branch_logo"],
-      phone: localStorage["branch_phone"],
-      date: new Date().toLocaleDateString("en-GB"),
       page: 0,
       pages: 1,
       limit: 50,
@@ -725,7 +664,6 @@ export default {
     document.querySelector("[confirm-modal-button]").onclick = () => {
       this.order_confirm.money[0].paid_money = this.order_balance.total_price;
     };
-    document.querySelector("[modal-check-button]").click();
   },
   watch: {
     customer_type(customer_type) {
@@ -776,18 +714,6 @@ export default {
     },
   },
   methods: {
-    formatPhoneNumber(number) {
-      return String(
-        "(" +
-          String(number).substr(0, 2) +
-          ") " +
-          String(number).substr(2, 3) +
-          " " +
-          String(number).substr(5, 2) +
-          " " +
-          String(number).substr(7, 2)
-      );
-    },
     toggleDisable(index) {
       let timeout;
       clearTimeout(timeout);
@@ -1129,98 +1055,6 @@ export default {
         }
       });
     },
-    createBarcode(id) {
-      setTimeout(() => {
-        JsBarcode("#order_barcode", id, {
-          // format: "CODE128",
-          width: 2,
-          height: 30,
-        });
-      }, 100);
-      this.getOrder(id);
-    },
-    getOrder(id) {
-      order(id)
-        .then((Response) => {
-          this.order = Response.data;
-          this.getIncome(id);
-        })
-        .catch((error) => {
-          this.$emit("setloading", false);
-          catchError(error);
-        });
-    },
-    getIncome(id) {
-      incomes(id, "order", 0, 100)
-        .then((Response) => {
-          this.order.Income = Response.data.data;
-          this.getBalance2(id);
-        })
-        .catch((error) => {
-          this.$emit("setloading", false);
-          catchError(error);
-        });
-    },
-    getBalance2(id) {
-      tradeBalance(id)
-        .then((Response) => {
-          this.order.Balance = Response.data;
-          this.getTrades2(id, 0, 100);
-        })
-        .catch((error) => {
-          this.$emit("setloading", false);
-          catchError(error);
-        });
-    },
-    getTrades2(id, page, limit) {
-      trades(id, page, limit)
-        .then((Response) => {
-          this.order.Trades = Response.data.data;
-          this.getLoan(id);
-        })
-        .catch((error) => {
-          this.$emit("setloading", false);
-          catchError(error);
-        });
-    },
-    getLoan(id) {
-      orderLoan(id, 0)
-        .then((Response) => {
-          this.order.Loans = Response.data;
-          this.order_check = true;
-          setTimeout(() => {
-            this.printCheck();
-          }, 1000);
-          setTimeout(() => {
-            this.order_check = false;
-            this.get(0, 100);
-          }, 1500);
-        })
-        .catch((error) => {
-          this.$emit("setloading", false);
-          catchError(error);
-        });
-    },
-    printCheck() {
-      let check = document.querySelector("#check").outerHTML;
-      const winPrint = window.open("", "", "");
-      winPrint.document.querySelector("head").innerHTML = `
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-      <style>
-        * {
-          font-size: 12px !important;
-        }
-        .list-group-item {
-          display: flex !important;
-          justify-content: space-between !important;
-          border: none !important;
-        }
-      </style>
-      `;
-      winPrint.document.querySelector("body").innerHTML = check;
-      winPrint.print();
-    },
   },
 };
 </script>
@@ -1276,71 +1110,5 @@ input[type="number"] {
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-
-/* order-check */
-
-#order-check {
-  width: 100%;
-  text-align: center;
-}
-
-.check-img {
-  width: 30%;
-  margin: auto;
-}
-
-.check-img > img {
-  width: 100%;
-}
-
-.news {
-  padding: 10px 20px;
-}
-
-.social {
-  width: 40%;
-  margin: auto;
-  display: grid;
-  gap: 5px;
-  border: thin solid black;
-  border-radius: 5px;
-}
-
-.date {
-  text-align: end;
-}
-
-.mini-view {
-  display: grid;
-  gap: 5px;
-}
-
-.mini-view > div,
-.sum > div {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.products {
-  display: flex;
-}
-
-.products > div {
-  padding: 5px;
-}
-
-.products > div:nth-child(1) {
-  width: 50%;
-}
-
-.products > div:nth-child(2) {
-  width: 15%;
-  border-block: thin solid black;
-}
-
-.products > div:nth-child(3) {
-  width: 35%;
 }
 </style>

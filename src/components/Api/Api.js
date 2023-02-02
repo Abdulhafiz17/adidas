@@ -375,7 +375,7 @@ export function confirmationOrder(id, data) {
 // trade
 
 export function trades(id, page, limit) {
-  return instance.get(`get_trades/${id}`);
+  return instance.get(`get_trades/${id}?page=${page}&limit=${limit}`);
 }
 export function toTrade(data) {
   return instance.post(`to_trade`, data);

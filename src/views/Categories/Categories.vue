@@ -362,15 +362,18 @@
               </div>
               <div id="tag_address">
                 <div>Adidas Andijon Navruz MALL</div>
-                <div>{{ formatPhoneNumber(phone) }} C Blok Гф 14</div>
                 <div>
+                  <b> {{ formatPhoneNumber(phone) }} </b>
+                  <span> C Blok ГФ 14 </span>
+                </div>
+                <b>
                   {{
                     categories.find(
                       ({ Categories }) =>
                         Categories.id == product.Products.category_id
                     ).Categories.name
                   }}
-                </div>
+                </b>
               </div>
             </div>
             <div id="tag_body">
@@ -382,13 +385,15 @@
                 </div>
               </div>
               <div>
-                PRICE:
+                <span>PRICE:</span>
                 <span>
                   {{
                     Intl.NumberFormat().format(product.Products.vitrina_narx)
                   }}
                 </span>
-                {{ product.Products.currency_savdo.currency.toUpperCase() }}
+                <span>
+                  {{ product.Products.currency_savdo.currency.toUpperCase() }}
+                </span>
               </div>
             </div>
             <div id="tag_footer">
@@ -532,9 +537,8 @@ export default {
   methods: {
     formatPhoneNumber(number) {
       return String(
-        "(" +
-          String(number).substr(0, 2) +
-          ") " +
+        String(number).substr(0, 2) +
+          " " +
           String(number).substr(2, 3) +
           " " +
           String(number).substr(5, 2) +
@@ -591,7 +595,7 @@ export default {
         JsBarcode("#barcode", product.Products.code, {
           // format: "CODE128",
           width: 2,
-          height: 30,
+          height: 25,
           margin: 1,
           displayValue: false,
         });
@@ -609,15 +613,19 @@ export default {
         }
         #tag {
           width: 6cm;
-          height: 4cm;
+          height: 3.8cm;
+          padding: 1px;
           color: black;
           background: white;
+          white-space: pre-line;
           text-align: center;
-          font-size: x-small;
+          font-size: 12px;
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         }
         #tag_header {
-          height: 1.5cm;
+          height: 1.3cm;
           display: flex;
+          font-size: 11px;
         }
         #tag_header > * {
           height: 100%;
@@ -626,7 +634,6 @@ export default {
           width: 30%;
           display: flex;
           justify-content: center;
-          align-items: center;
         }
         #tag_logo img {
           width: 80%;
@@ -638,14 +645,11 @@ export default {
         }
         #tag_address > * {
           width: 100%;
-          height: 33.3%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          text-align: center;
         }
         #tag_body {
-          height: 1cm;
-          font-weight: 600;
+          height: 1.1cm;
+          font-weight: bold;
         }
         #tag_body > * {
           width: 100%;
@@ -654,7 +658,8 @@ export default {
         #tag_body > *:first-of-type {
           display: flex;
           justify-content: center;
-          align-items: center;
+          align-items: flex-start;
+          font-size: x-small;
         }
         #tag_body > *:first-of-type > * {
           width: 50%;
@@ -664,20 +669,28 @@ export default {
         }
         #tag_body > *:first-of-type span {
           margin: 0 3px;
-          padding: 3px;
+          padding: 0 2px;
           color: white;
           background-color: black;
           border-radius: 3px;
         }
-        #tag_body > *:last-of-type span {
+        #tag_body > *:last-of-type {
+          padding: 0 15px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           font-size: 13px;
-          font-weight: 700;
+        }
+        #tag_body > *:last-of-type > span:nth-child(2) {
+          padding: 0 5px;
+          font-size: 17px;
         }
         #tag_footer {
-          height: 1.5cm;
+          height: 1.4cm;
         }
         #tag_footer div {
-          font-size: 18px;
+          font-size: 16px;
+          font-weight: 600;
         }
       </style>`;
       winPrint.document.body.innerHTML = price_tag;
@@ -760,15 +773,19 @@ export default {
 }
 #tag {
   width: 6cm;
-  height: 4cm;
+  height: 3.8cm;
+  padding: 1px;
   color: black;
   background: white;
+  white-space: pre-line;
   text-align: center;
-  font-size: x-small;
+  font-size: 12px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 #tag_header {
-  height: 1.5cm;
+  height: 1.3cm;
   display: flex;
+  font-size: 11px;
 }
 #tag_header > * {
   height: 100%;
@@ -777,7 +794,6 @@ export default {
   width: 30%;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 #tag_logo img {
   width: 80%;
@@ -789,14 +805,11 @@ export default {
 }
 #tag_address > * {
   width: 100%;
-  height: 33.3%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
 }
 #tag_body {
-  height: 1cm;
-  font-weight: 600;
+  height: 1.1cm;
+  font-weight: bold;
 }
 #tag_body > * {
   width: 100%;
@@ -805,7 +818,8 @@ export default {
 #tag_body > *:first-of-type {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  font-size: x-small;
 }
 #tag_body > *:first-of-type > * {
   width: 50%;
@@ -815,24 +829,29 @@ export default {
 }
 #tag_body > *:first-of-type span {
   margin: 0 3px;
-  padding: 3px;
+  padding: 0 2px;
   color: white;
   background-color: black;
   border-radius: 3px;
 }
-#tag_body > *:last-of-type span {
+#tag_body > *:last-of-type {
+  padding: 0 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 13px;
-  font-weight: 700;
+}
+#tag_body > *:last-of-type > span:nth-child(2) {
+  padding: 0 5px;
+  font-size: 17px;
 }
 #tag_footer {
-  height: 1.5cm;
+  height: 1.4cm;
 }
 #tag_footer div {
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 600;
 }
-/* #barcode {
-  border: thin dotted black;
-} */
 
 .modal-body .row {
   overflow-x: hidden;

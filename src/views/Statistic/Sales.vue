@@ -236,7 +236,7 @@
                     data-toggle="modal"
                     data-target="#order"
                   >
-                    <h6>Buyurtma id - {{ item.id }}</h6>
+                    <h6>Buyurtma raqami - {{ item.ordinal_number }}</h6>
                     <h6>
                       Mijoz:
                       {{ item.customer ? item.customer.name : "Umumiy" }}
@@ -432,10 +432,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button
-            class="btn btn-outline-primary"
-            @click="createBarcode(order.id)"
-          >
+          <button class="btn btn-outline-primary" @click="$refs.check.start()">
             <i class="fa fa-print"></i>
           </button>
           <button
@@ -450,101 +447,11 @@
     </div>
   </div>
 
-  <div class="orderCheck d-none">
-    <div id="check">
-      <ul class="list-group" v-if="order && order.balance">
-        <li class="list-group-item">
-          <span></span>
-          <span>
-            {{ order.time.substring(0, 16).replace("T", " ") }}
-          </span>
-        </li>
-        <hr />
-        <span class="p-1">Mahsulotlar</span>
-        <li class="list-group-item" v-for="item in order.trades" :key="item">
-          <span>
-            {{
-              item.Products.articul +
-              "-" +
-              item.Products.size +
-              " x " +
-              item.Trades.quantity
-            }}
-          </span>
-          <span>
-            {{
-              Intl.NumberFormat().format(item.Trades.price) +
-              " " +
-              order.income[0].currency +
-              (item.Trades.discount
-                ? " ( -" +
-                  Intl.NumberFormat().format(item.Trades.discount) +
-                  " " +
-                  order.income[0].currency +
-                  " )"
-                : "")
-            }}
-          </span>
-        </li>
-        <hr />
-        <li class="list-group-item">
-          <span>Buyurtma summasi: </span>
-          <span>
-            {{
-              Intl.NumberFormat().format(order.balance.total_price) +
-              " " +
-              order.balance.currency
-            }}
-          </span>
-        </li>
-        <li class="list-group-item">
-          <span>Buyurtma chegirmasi: </span>
-          <span>
-            {{
-              Intl.NumberFormat().format(order.discount) +
-              " " +
-              order.balance.currency
-            }}
-          </span>
-        </li>
-        <hr />
-        <li class="list-group-item">
-          {{ "To'lov summasi :" }}
-          <span
-            v-for="item in order.income.filter(
-              (income) => income.Incomes.money > 0
-            )"
-            :key="item"
-          >
-            {{ item.Incomes.comment + ":" }}
-            {{
-              Intl.NumberFormat().format(item.Incomes.money) +
-              " " +
-              item.currency
-            }}
-          </span>
-        </li>
-        <li class="list-group-item" v-if="order.Loans">
-          <span>Nasiya</span>
-          <span>
-            {{
-              Intl.NumberFormat().format(order.Loans.Loans.money) +
-              " " +
-              order.Loans.loan_currency +
-              " " +
-              order.Loans.Loans.return_date
-            }}
-          </span>
-        </li>
-      </ul>
-      <div class="d-flex justify-content-center">
-        <img id="order_barcode" />
-      </div>
-    </div>
-  </div>
+  <check :order-id="order?.id" ref="check" />
 </template>
 
 <script>
+import check from "@/components/order/check.vue";
 import {
   catchError,
   incomes,
@@ -560,6 +467,7 @@ export default {
   name: "Sales",
   props: ["branch_currency"],
   emits: ["setloading"],
+  components: { check },
   data() {
     return {
       _: Intl.NumberFormat(),
@@ -772,36 +680,6 @@ export default {
         },
       });
       this.$emit("setloading", false, "sales");
-    },
-    createBarcode(id) {
-      setTimeout(() => {
-        JsBarcode("#order_barcode", id, {
-          // format: "CODE128",
-          width: 2,
-          height: 30,
-        });
-        this.printCheck();
-      }, 100);
-    },
-    printCheck() {
-      let check = document.querySelector("#check").outerHTML;
-      const winPrint = window.open("", "", "");
-      winPrint.document.querySelector("head").innerHTML = `
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-      <style>
-        * {
-          font-size: 12px !important;
-        }
-        .list-group-item {
-          display: flex !important;
-          justify-content: space-between !important;
-          border: none !important;
-        }
-      </style>
-      `;
-      winPrint.document.querySelector("body").innerHTML = check;
-      winPrint.print();
     },
     routerToReturn() {
       localStorage.setItem("order_id_for_return", this.order.id);
