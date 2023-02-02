@@ -676,6 +676,7 @@ export default {
         }
         #tag_body > *:last-of-type {
           padding: 0 15px;
+          padding-bottom: 15px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -836,6 +837,7 @@ export default {
 }
 #tag_body > *:last-of-type {
   padding: 0 15px;
+  padding-bottom: 15px;
   display: flex;
   justify-content: center;
   align-items: center;

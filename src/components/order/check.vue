@@ -14,7 +14,10 @@
             <div class="check-img">
               <img :src="`${api.url_to_files}/${logo}`" :alt="logo" />
             </div>
-            <div class="news">Yangiliklardan habardor bo'ling !</div>
+            <div class="news">
+              Yangiliklardan <br />
+              habardor bo'ling !
+            </div>
             <div class="social">
               <div><i class="fab fa-telegram-plane"></i> adidas_andijon</div>
               <div><i class="fab fa-instagram"></i> adidas.navruzmall</div>
@@ -22,8 +25,12 @@
                 <i class="fa fa-phone"></i> +998 {{ formatPhoneNumber(phone) }}
               </div>
             </div>
-            <div class="news">Будьте в курсе новостей !</div>
-            <div class="date">
+            <div class="news">
+              Будьте в курсе <br />
+              новостей !
+            </div>
+            <div class="date-time">
+              <b>{{ time }}</b>
               <b>{{ date }}</b>
             </div>
             <hr />
@@ -138,10 +145,8 @@ export default {
       _: Intl.NumberFormat(),
       logo: localStorage["branch_logo"],
       phone: localStorage["branch_phone"],
-      date:
-        new Date().toLocaleTimeString({ hourCycle: "h24" }).substring(0, 5) +
-        " " +
-        new Date().toLocaleDateString("en-GB"),
+      date: new Date().toLocaleDateString("en-GB"),
+      time: new Date().toLocaleTimeString({ hourCycle: "h23" }).substring(0, 4),
       order: null,
       trades: [],
       trades_quantity: null,
@@ -261,19 +266,21 @@ hr {
 
 .news {
   padding: 5px 20px;
+  font-size: large;
 }
 
 .social {
-  width: 40%;
+  width: 50%;
   margin: auto;
   display: grid;
   gap: 5px;
-  border: thin solid black;
+  border: 2px solid black;
   border-radius: 5px;
 }
 
-.date {
-  text-align: end;
+.date-time {
+  display: flex;
+  justify-content: space-between;
 }
 
 .mini-view {

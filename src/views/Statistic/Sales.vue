@@ -55,17 +55,13 @@
     style="max-height: 70vh"
   >
     <div class="row">
-      <div
-        class="col-md-3 col-sm-6 my-1"
-        v-for="item in days"
-        :key="item"
-        v-show="
+      <div class="col-md-4 col-sm-6 my-1" v-for="item in days" :key="item">
+        <!-- v-show="
           item.orders?.length ||
           item.trade_cat_data?.length ||
-          item.expense?.length ||
+          item.expenses?.length ||
           item.returned_price
-        "
-      >
+        " -->
         <div class="card shadow day">
           <div
             class="card-body"
@@ -115,6 +111,19 @@
               </strong>
             </span>
             <hr />
+            <span>
+              Chiqimlar:
+              <strong>
+                <span v-for="item2 in item.expenses" :key="item">
+                  {{ _.format(item2.sum_price) + " " + item2.currency }} <br />
+                </span>
+              </strong>
+            </span>
+            <hr />
+            <span>
+              Adminga beriladigan summa:
+              <strong>{{ _.format(item.admin_price) }}</strong>
+            </span>
             <span>
               Daromad:
               <strong
