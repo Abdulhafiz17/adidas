@@ -614,7 +614,7 @@ export default {
         #tag {
           width: 6cm;
           height: 3.8cm;
-          padding: 1px;
+          padding: 5px 1px 1px 1px;
           color: black;
           background: white;
           white-space: pre-line;
@@ -625,7 +625,7 @@ export default {
         #tag_header {
           height: 1.3cm;
           display: flex;
-          font-size: 11px;
+          font-size: x-small;
         }
         #tag_header > * {
           height: 100%;
@@ -667,6 +667,10 @@ export default {
           justify-content: center;
           align-items: center;
         }
+        #tag_body > *:first-of-type > div:last-of-type {
+          padding-right: 0.8cm;
+          justify-content: end;
+        }
         #tag_body > *:first-of-type span {
           margin: 0 3px;
           padding: 0 2px;
@@ -674,17 +678,21 @@ export default {
           background-color: black;
           border-radius: 3px;
         }
+        #tag_body > *:first-of-type > div:nth-child(1) {
+          padding-right: 25px;
+          justify-content: flex-end;
+        }
         #tag_body > *:last-of-type {
           padding: 0 15px;
           padding-bottom: 15px;
           display: flex;
           justify-content: center;
           align-items: center;
-          font-size: 13px;
+          font-size: 14px;
         }
         #tag_body > *:last-of-type > span:nth-child(2) {
-          padding: 0 5px;
-          font-size: 17px;
+          padding: 0 10px;
+          font-size: 18px;
         }
         #tag_footer {
           height: 1.4cm;
@@ -775,7 +783,7 @@ export default {
 #tag {
   width: 6cm;
   height: 3.8cm;
-  padding: 1px;
+  padding: 5px 1px 1px 1px;
   color: black;
   background: white;
   white-space: pre-line;
@@ -786,7 +794,7 @@ export default {
 #tag_header {
   height: 1.3cm;
   display: flex;
-  font-size: 11px;
+  font-size: x-small;
 }
 #tag_header > * {
   height: 100%;
@@ -828,6 +836,10 @@ export default {
   justify-content: center;
   align-items: center;
 }
+#tag_body > *:first-of-type > div:last-of-type {
+  padding-right: 0.8cm;
+  justify-content: end;
+}
 #tag_body > *:first-of-type span {
   margin: 0 3px;
   padding: 0 2px;
@@ -835,17 +847,21 @@ export default {
   background-color: black;
   border-radius: 3px;
 }
+#tag_body > *:first-of-type > div:nth-child(1) {
+  padding-right: 25px;
+  justify-content: flex-end;
+}
 #tag_body > *:last-of-type {
   padding: 0 15px;
   padding-bottom: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 13px;
+  font-size: 14px;
 }
 #tag_body > *:last-of-type > span:nth-child(2) {
-  padding: 0 5px;
-  font-size: 17px;
+  padding: 0 10px;
+  font-size: 18px;
 }
 #tag_footer {
   height: 1.4cm;

@@ -9,7 +9,7 @@
   <div class="modal fade" id="modal-check">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-body">
+        <div class="modal-body" id="check">
           <div id="order-check">
             <div class="check-img">
               <img :src="`${api.url_to_files}/${logo}`" :alt="logo" />
@@ -30,8 +30,8 @@
               новостей !
             </div>
             <div class="date-time">
-              <b>{{ time }}</b>
-              <b>{{ date }}</b>
+              <b>{{ order?.Orders?.time.split("T")[1].substring(0, 5) }}</b>
+              <b>{{ order?.Orders?.time.split("T")[0] }}</b>
             </div>
             <hr />
             <div class="mini-view">
@@ -49,6 +49,11 @@
               </div>
             </div>
             <hr />
+            <div class="products">
+              <div><b>Mahsulot</b></div>
+              <div><b>Dona</b></div>
+              <div><b>Narx</b></div>
+            </div>
             <div class="products" v-for="item in trades" :key="item">
               <div>
                 {{
@@ -59,7 +64,7 @@
                   item.Products.size
                 }}
               </div>
-              <div>{{ item.Trades.quantity + " dona" }}</div>
+              <div>{{ item.Trades.quantity }}</div>
               <div>
                 <div class="discount" v-if="item.Trades.discount">
                   <div class="discount-price">
@@ -104,7 +109,11 @@
                 </span>
               </div>
               <hr />
-              <div v-for="item in incomes" :key="item">
+              <div
+                v-for="item in incomes"
+                :key="item"
+                v-show="item.Incomes.money"
+              >
                 <span>
                   {{ item.Incomes.comment + ":" }}
                 </span>
@@ -126,6 +135,7 @@
               <div>Thank you for your purchase !</div>
               <div>Спасибо за покупку !</div>
             </div>
+            <div id="qrcode"></div>
           </div>
         </div>
       </div>
@@ -133,20 +143,19 @@
   </div>
 </template>
 
-<script>
+<script type="text/javascript">
 import * as api from "../Api/Api";
 export default {
   name: "check",
   props: {
     orderId: { required: true },
   },
+  emits: ["setloading"],
   data() {
     return {
       _: Intl.NumberFormat(),
       logo: localStorage["branch_logo"],
       phone: localStorage["branch_phone"],
-      date: new Date().toLocaleDateString("en-GB"),
-      time: new Date().toLocaleTimeString({ hourCycle: "h23" }).substring(0, 4),
       order: null,
       trades: [],
       trades_quantity: null,
@@ -180,13 +189,13 @@ export default {
       );
     },
     start() {
+      this.$emit("setloading", true);
       this.getOrder();
     },
     getOrder() {
       api
         .order(this.id)
         .then((res) => {
-          console.log(res.data);
           this.order = res.data;
           this.getTrades();
         })
@@ -198,7 +207,6 @@ export default {
       api
         .trades(this.id, 0, 50)
         .then((res) => {
-          console.log(res.data.data);
           this.trades = res.data.data;
           let quantity = null,
             discount = null;
@@ -218,7 +226,6 @@ export default {
       api
         .tradeBalance(this.id)
         .then((res) => {
-          console.log(res.data);
           this.balance = res.data;
           this.getIncomes();
         })
@@ -230,101 +237,145 @@ export default {
       api
         .incomes(this.id, "order", 0, 50)
         .then((res) => {
-          console.log(res.data.data);
-          this.incomes = res.data.data;
-          this.openModal();
+          this.incomes = res.data.data.sort((a, b) => {
+            let x = a.Incomes.comment,
+              y = b.Incomes.comment;
+            return x > y ? 1 : x < y ? -1 : 0;
+          });
+          this.createQrcode();
         })
         .catch((err) => {
           api.catchError(err);
         });
     },
-    openModal() {
-      document.querySelector("[modal-check-button]").click();
+    createQrcode() {
+      let div = document.querySelector("#qrcode");
+      div.innerHTML = "";
+      new QRCode(div, {
+        text: String(this.id),
+        width: 100,
+        height: 100,
+        colorDark: "black",
+      });
+      this.printCheck();
+    },
+    printCheck() {
+      let check = document.getElementById("order-check");
+      let winPrint = window.open();
+      winPrint.document.head.innerHTML += `
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <style>
+          * {
+            box-sizing: border-box;
+          }
+          #order-check {
+            width: 300px;
+            text-align: center;
+          }
+
+          @media print {
+            #order-check {
+              width: 100%;
+            }
+          }
+
+          hr {
+            margin: 5px;
+          }
+
+          .check-img {
+            width: 50%;
+            margin: auto;
+          }
+
+          .check-img > img {
+            width: 100%;
+          }
+
+          .news {
+            padding: 5px 20px;
+            font-size: large;
+          }
+
+          .social {
+            width: 80%;
+            margin: auto;
+            padding: 5px;
+            display: grid;
+            gap: 5px;
+            border: 2px solid black;
+            border-radius: 5px;
+          }
+
+          .date-time {
+            display: flex;
+            justify-content: space-between;
+          }
+
+          .mini-view {
+            display: grid;
+            gap: 5px;
+          }
+
+          .mini-view > div,
+          .sum > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+
+          .products {
+            display: flex;
+            font-size: small;
+          }
+
+          .products > div {
+            padding: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .products > div:nth-child(1) {
+            width: 50%;
+            justify-content: start;
+            text-align: start;
+          }
+
+          .products > div:nth-child(2) {
+            width: 10%;
+          }
+
+          .products > div:nth-child(3) {
+            width: 40%;
+            justify-content: end;
+            text-align: end;
+          }
+
+          .products > div:nth-child(3) > .discount > .discount-price {
+            text-decoration: line-through;
+          }
+
+          .products > div:nth-child(3) > .discount > .residual-price {
+            font-size: small;
+          }
+
+          #qrcode {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+          }
+        </style>`;
+      winPrint.document.body.append(check);
+      setTimeout(() => {
+        winPrint.print();
+        winPrint.close();
+        document.getElementById("check").append(check);
+        this.$emit("setloading", false);
+      }, 500);
     },
   },
 };
 </script>
 
-<style scoped>
-#order-check {
-  width: 100%;
-  text-align: center;
-}
-
-hr {
-  margin: 5px;
-}
-
-.check-img {
-  width: 30%;
-  margin: auto;
-}
-
-.check-img > img {
-  width: 100%;
-}
-
-.news {
-  padding: 5px 20px;
-  font-size: large;
-}
-
-.social {
-  width: 50%;
-  margin: auto;
-  display: grid;
-  gap: 5px;
-  border: 2px solid black;
-  border-radius: 5px;
-}
-
-.date-time {
-  display: flex;
-  justify-content: space-between;
-}
-
-.mini-view {
-  display: grid;
-  gap: 5px;
-}
-
-.mini-view > div,
-.sum > div {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.products {
-  display: flex;
-}
-
-.products > div {
-  padding: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.products > div:nth-child(1) {
-  width: 50%;
-  justify-content: start;
-}
-
-.products > div:nth-child(2) {
-  width: 15%;
-}
-
-.products > div:nth-child(3) {
-  width: 35%;
-  justify-content: end;
-}
-
-.products > div:nth-child(3) > .discount > .discount-price {
-  text-decoration: line-through;
-}
-
-.products > div:nth-child(3) > .discount > .residual-price {
-  font-size: small;
-}
-</style>
+<style scoped></style>

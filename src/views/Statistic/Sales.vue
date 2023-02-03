@@ -456,7 +456,7 @@
     </div>
   </div>
 
-  <check :order-id="order?.id" ref="check" />
+  <check :order-id="order?.id" @setloading="setloading" ref="check" />
 </template>
 
 <script>
@@ -510,6 +510,9 @@ export default {
   },
   mounted() {},
   methods: {
+    setloading(loading) {
+      this.$emit("setloading", loading);
+    },
     countPercentPrice(sum, percent) {
       return (sum / 100) * percent;
     },
