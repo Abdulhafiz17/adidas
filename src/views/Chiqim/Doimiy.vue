@@ -190,7 +190,7 @@ export default {
           this.history = this.history.sort((a, b) => {
             let x = a.Expenses.time,
               y = b.Expenses.time;
-            return x > y ? 1 : x < y ? -1 : 0;
+            return x < y ? -1 : x > y ? 1 : 0;
           });
           this.$emit("setloading", false);
         })

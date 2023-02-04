@@ -471,7 +471,6 @@ import {
   trades,
   users,
 } from "@/components/Api/Api";
-import JsBarcode from "jsbarcode";
 export default {
   name: "Sales",
   props: ["branch_currency"],
@@ -533,6 +532,11 @@ export default {
       statisticOrders(this.from_date, this.to_date, this.$route.params.id)
         .then((Response) => {
           this.days = Response.data.splice(1, Response.data.length);
+          this.days = this.days.sort((a, b) => {
+            let x = new Date(a.day),
+              y = new Date(b.day);
+            return x < y ? 1 : x > y ? -1 : 0;
+          });
           if (this.days.length) {
             this.prepareChart(this.days);
           } else this.$emit("setloading", false, "sales");
