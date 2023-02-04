@@ -575,7 +575,6 @@
 <script>
 import Bar from "./BottomBar.vue";
 import {
-  url_to_files,
   customers,
   catchError,
   orders,
@@ -590,11 +589,8 @@ import {
   confirmationOrder,
   users,
   order,
-  incomes,
-  orderLoan,
 } from "@/components/Api/Api";
 import swal from "sweetalert";
-import JsBarcode from "jsbarcode";
 export default {
   name: "Kassa",
   emits: ["setloading"],
@@ -1049,7 +1045,6 @@ export default {
       }).then((value) => {
         if (value) {
           this.order_id = this.order.id;
-          this.createBarcode(this.order_id);
         } else {
           this.get(0, 100);
         }
