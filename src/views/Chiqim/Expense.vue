@@ -33,39 +33,12 @@
   </div>
   <hr />
 
-  <ul class="nav nav-pills nav-justified my-1" id="pills-tab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button
-        :class="expense == 'fixed' ? 'nav-link active' : 'nav-link'"
-        type="button"
-        @click="expense = ''"
-        @click.passive="expense = 'fixed'"
-      >
-        Doimiy chiqimlar
-      </button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button
-        :class="expense == 'variable' ? 'nav-link active' : 'nav-link'"
-        type="button"
-        @click="expense = ''"
-        @click.passive="expense = 'variable'"
-      >
-        Bir marttalik chiqimlar
-      </button>
-    </li>
-  </ul>
-  <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active">
-      <Fixed
-        @setloading="setloading"
-        @getExpenses="getData"
-        :expenses="chiqimlar"
-        v-if="expense == 'fixed'"
-      />
-      <Variable @setloading="setloading" v-if="expense == 'variable'" />
-    </div>
-  </div>
+  <Fixed
+    @setloading="setloading"
+    @getExpenses="getData"
+    :expenses="chiqimlar"
+    v-if="expense == 'fixed'"
+  />
 
   <div class="modal fade" id="addExpense">
     <div class="modal-dialog">

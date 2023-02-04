@@ -4,10 +4,10 @@
       <select
         class="form-select form-select-sm"
         v-model="id"
-        @click="expenses.length ? '' : getExpenses()"
+        @click="getExpenses()"
       >
         <option value="0">Barchasi</option>
-        <option v-for="item in expenses" :key="item" :value="item.id">
+        <option v-for="item in fixed_expenses" :key="item" :value="item.id">
           {{ item.name }}
         </option>
       </select>
@@ -37,7 +37,7 @@
   </div>
   <div
     class="table-responsive"
-    :style="'max-height:' + role == 'branch_admin' ? '65vh' : '70vh'"
+    :style="`max-height: ${role == 'branch_admin' ? '74vh' : '79vh'}`"
   >
     <table class="table table-sm table-hover">
       <thead>
@@ -68,7 +68,7 @@
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="5">
+          <td colspan="6">
             <div class="input-group input-group-sm">
               <button
                 class="btn btn-sm"
@@ -122,7 +122,11 @@
 </template>
 
 <script>
-import { catchError, fixedExpense } from "@/components/Api/Api";
+import {
+  catchError,
+  fixedExpense,
+  variableExpenses,
+} from "@/components/Api/Api";
 export default {
   name: "Fixed",
   props: ["expenses"],
@@ -139,11 +143,16 @@ export default {
       history: [],
     };
   },
+  computed: {
+    fixed_expenses() {
+      return this.$props.expenses;
+    },
+  },
   created() {
-    this.get(this.page, this.limit);
+    this.getFixedExpenses(this.page, this.limit);
   },
   methods: {
-    get(page, limit) {
+    getFixedExpenses(page, limit) {
       this.$emit("setloading", true);
       fixedExpense(
         page,
@@ -157,6 +166,32 @@ export default {
           this.page = Response.data.current_page;
           this.pages = Response.data.pages;
           this.history = Response.data.data;
+          if (!this.id) this.getVaribaleExpenses(page, limit);
+          else this.$emit("setloading", false);
+        })
+        .catch((error) => {
+          this.$emit("setloading", false);
+          catchError(error);
+        });
+    },
+    getVaribaleExpenses(page, limit) {
+      this.$emit("setloading", true);
+      variableExpenses(
+        page,
+        limit,
+        this.$route.params.id,
+        this.from_time,
+        this.to_time
+      )
+        .then((Response) => {
+          this.page = Response.data.current_page;
+          this.pages = Response.data.pages;
+          this.history = this.history.concat(Response.data.data);
+          this.history = this.history.sort((a, b) => {
+            let x = a.Expenses.time,
+              y = b.Expenses.time;
+            return x > y ? 1 : x < y ? -1 : 0;
+          });
           this.$emit("setloading", false);
         })
         .catch((error) => {
