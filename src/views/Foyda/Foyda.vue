@@ -356,8 +356,8 @@
                       item.currency.currency
                     }}
                   </td>
-                  <td>{{ item.user.name }}</td>
-                  <td>{{ item.time.substring(0, item.time.length - 9) }}</td>
+                  <td>{{ item.user?.name }}</td>
+                  <td>{{ item.time?.substring(0, item.time.length - 9) }}</td>
                 </tr>
               </tbody>
             </table>

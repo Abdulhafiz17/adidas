@@ -570,10 +570,13 @@
       </div>
     </div>
   </div>
+
+  <check :order-id="order?.id" @setloading="setloading" ref="check" />
 </template>
 
 <script>
 import Bar from "./BottomBar.vue";
+import check from "../../components/order/check.vue";
 import {
   customers,
   catchError,
@@ -594,7 +597,7 @@ import swal from "sweetalert";
 export default {
   name: "Kassa",
   emits: ["setloading"],
-  components: { Bar },
+  components: { Bar, check },
   data() {
     return {
       page: 0,
@@ -1044,7 +1047,7 @@ export default {
         },
       }).then((value) => {
         if (value) {
-          this.order_id = this.order.id;
+          this.$refs.check.start();
         } else {
           this.get(0, 100);
         }
