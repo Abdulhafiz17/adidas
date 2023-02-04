@@ -518,11 +518,11 @@ export function payForUser(data) {
 export function userExpenses(user_id, from_time, to_time, page, limit) {
   if (from_time && to_time) {
     return instance.get(
-      `get_user_expenses?${user_id}&from_time=${from_time}&to_time=${to_time}&page=${page}&limit=${limit}`
+      `get_user_expenses?user_id=${user_id}&from_time=${from_time}&to_time=${to_time}&page=${page}&limit=${limit}`
     );
   } else {
     return instance.get(
-      `get_user_expenses?${user_id}&page=${page}&limit=${limit}`
+      `get_user_expenses?user_id=${user_id}&page=${page}&limit=${limit}`
     );
   }
 }

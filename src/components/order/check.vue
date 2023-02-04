@@ -172,9 +172,7 @@ export default {
       return this.$props.orderId;
     },
   },
-  created() {
-    console.clear();
-  },
+  created() {},
   methods: {
     formatPhoneNumber(number) {
       return String(
