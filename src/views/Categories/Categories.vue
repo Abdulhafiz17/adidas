@@ -495,6 +495,7 @@
 
 <script>
 import {
+  branch,
   url_to_files,
   catchError,
   categories,
@@ -512,8 +513,8 @@ export default {
   data() {
     return {
       url_to_files,
-      logo: localStorage.getItem("branch_logo"),
-      phone: localStorage.getItem("branch_phone"),
+      logo: null,
+      phone: null,
       search: "",
       page: 0,
       pages: 1,
@@ -532,7 +533,7 @@ export default {
     };
   },
   created() {
-    this.getBalance(this.page, this.limit);
+    this.getBranch();
   },
   methods: {
     formatPhoneNumber(number) {
@@ -545,6 +546,18 @@ export default {
           " " +
           String(number).substr(7, 2)
       );
+    },
+    getBranch() {
+      branch(localStorage["branch_id"])
+        .then((res) => {
+          console.log(res.data);
+          this.logo = res.data.logo?.logo;
+          this.phone = res.data.branch?.phone;
+          this.getBalance(this.page, this.limit);
+        })
+        .catch((err) => {
+          this.$emit("setloading", false);
+        });
     },
     getBalance(page, limit) {
       this.$emit("setloading", true);
