@@ -49,6 +49,7 @@ import Sidebar from "./components/sidebar/Sidebar.vue";
 import Notification from "./views/Notification/Notification.vue";
 import swal from "sweetalert";
 import isloading from "./components/Animation/Anime.vue";
+import * as api from "./components/Api/Api";
 export default {
   name: "App",
   components: { Sidebar, Notification, isloading },
@@ -66,6 +67,13 @@ export default {
     },
   },
   created() {
+    if (this.role == "branch_admin") {
+      api.branch(localStorage["branch_id"]).then((res) => {
+        console.log(res.data);
+        localStorage.setItem("branch_logo", res.data.logo?.logo);
+        localStorage.setItem("branch_phone", res.data.branch?.phone);
+      });
+    }
     this.setDisplay();
     setInterval(() => {
       window.onoffline = () => {

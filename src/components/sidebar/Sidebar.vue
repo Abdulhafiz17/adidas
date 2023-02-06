@@ -1,6 +1,5 @@
 <script>
 import { sidebarWidth, collapsed, toggleSidebar } from "./state";
-import * as api from "../Api/Api";
 export default {
   components: { toggleSidebar },
   data() {
@@ -13,13 +12,7 @@ export default {
   setup() {
     return { collapsed, sidebarWidth, toggleSidebar };
   },
-  created() {
-    api.branch(this.branch_id).then((res) => {
-      this.logo = res.data.logo;
-      localStorage.setItem("branch_logo", res.data.logo.logo);
-      localStorage.setItem("branch_phone", res.data.branch.phone);
-    });
-  },
+  created() {},
   methods: {},
 };
 </script>

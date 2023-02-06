@@ -512,8 +512,8 @@ export default {
   data() {
     return {
       url_to_files,
-      logo: localStorage["branch_logo"],
-      phone: localStorage["branch_phone"],
+      logo: localStorage.getItem("branch_logo"),
+      phone: localStorage.getItem("branch_phone"),
       search: "",
       page: 0,
       pages: 1,
