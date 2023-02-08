@@ -45,7 +45,7 @@
           <button class="btn btn-outline-primary" @click="printCheck()">
             <i class="fa fa-print"></i>
           </button>
-          <button class="btn btn-outline-danger">
+          <button class="btn btn-outline-danger" data-dismiss="modal">
             <i class="far fa-circle-xmark"></i>
           </button>
         </div>
