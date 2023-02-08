@@ -40,6 +40,12 @@
     <div class="col-md-3 my-1">
       <div class="btn-group btn-group-sm">
         <button
+          class="btn btn-outline-warning"
+          @click="$refs.adminCheck.start()"
+        >
+          <i class="fa fa-receipt"></i>
+        </button>
+        <button
           class="btn btn-success"
           @click="distributing()"
           :disabled="distribute.total_profit > 0 ? false : true"
@@ -478,9 +484,16 @@
       </div>
     </div>
   </div>
+
+  <AdminChek
+    :branch-currency="branch_currency"
+    @setloading="setloading"
+    ref="adminCheck"
+  />
 </template>
 
 <script>
+import AdminChek from "@/components/benefit/AdminChek.vue";
 import {
   branch,
   catchError,
@@ -500,6 +513,7 @@ import swal from "sweetalert";
 export default {
   name: "Benefit",
   emits: ["setloading"],
+  components: { AdminChek },
   data() {
     return {
       branch_id: localStorage.getItem("branch_id"),
@@ -527,6 +541,9 @@ export default {
     this.get();
   },
   methods: {
+    setloading(loading) {
+      this.$emit("setloading", loading);
+    },
     format(number) {
       return String(
         "(" +
