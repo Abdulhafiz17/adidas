@@ -361,10 +361,26 @@
                 <img :src="`${url_to_files}/${logo}`" :alt="logo" />
               </div>
               <div id="tag_address">
-                <div>Adidas Andijon Navruz MALL</div>
+                <div>
+                  {{
+                    name.toLocaleLowerCase() == "adidas"
+                      ? name + " Andijon Navruz MALL"
+                      : name.toLocaleLowerCase() == "nike"
+                      ? name + " Andijon ТРЦ O'zbegim "
+                      : ""
+                  }}
+                </div>
                 <div>
                   <b> {{ formatPhoneNumber(phone) }} </b>
-                  <span> C Blok ГФ 14 </span>
+                  <span>
+                    {{
+                      name.toLocaleLowerCase() == "adidas"
+                        ? " C Blok ГФ 14"
+                        : name.toLocaleLowerCase() == "nike"
+                        ? " 2-етаж ГФ 205"
+                        : ""
+                    }}
+                  </span>
                 </div>
                 <b>
                   {{
@@ -515,6 +531,7 @@ export default {
       url_to_files,
       logo: null,
       phone: null,
+      name: "",
       search: "",
       page: 0,
       pages: 1,
@@ -553,6 +570,7 @@ export default {
           console.log(res.data);
           this.logo = res.data.logo?.logo;
           this.phone = res.data.branch?.phone;
+          this.name = res.data.branch?.name;
           this.getBalance(this.page, this.limit);
         })
         .catch((err) => {

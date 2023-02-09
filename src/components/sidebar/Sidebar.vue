@@ -1,5 +1,6 @@
 <script>
 import { sidebarWidth, collapsed, toggleSidebar } from "./state";
+import * as api from "../Api/Api";
 export default {
   components: { toggleSidebar },
   data() {
@@ -12,7 +13,11 @@ export default {
   setup() {
     return { collapsed, sidebarWidth, toggleSidebar };
   },
-  created() {},
+  created() {
+    api.branch(this.branch_id).then((res) => {
+      this.logo = res.data.logo?.logo;
+    });
+  },
   methods: {},
 };
 </script>
@@ -22,8 +27,8 @@ export default {
     <div class="sidebar">
       <div class="sidebar-logo" v-if="logo">
         <img
-          :src="`https://adidas-api.crud.uz/uploaded_files/${logo.logo}`"
-          :alt="`https://adidas-api.crud.uz/uploaded_files/${logo.logo}`"
+          :src="`https://adidas-api.crud.uz/uploaded_files/${logo}`"
+          :alt="`https://adidas-api.crud.uz/uploaded_files/${logo}`"
         />
       </div>
       <div class="sidebar-link">
