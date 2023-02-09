@@ -72,17 +72,17 @@
             <strong>{{ item.day }}</strong>
             <hr />
             <span>
-              Umumiy savdo:
-              <strong>
-                {{ _.format(item.trade_total_price) + " " + branch_currency }}
-              </strong>
-            </span>
-            <span>
               Umumiy tan narx:
               <strong>
                 {{
                   _.format(item.trade_total_tan_narx) + " " + branch_currency
                 }}
+              </strong>
+            </span>
+            <span>
+              Umumiy savdo:
+              <strong>
+                {{ _.format(item.trade_total_price) + " " + branch_currency }}
               </strong>
             </span>
             <span>
