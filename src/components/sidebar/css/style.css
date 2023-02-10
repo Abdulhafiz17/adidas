@@ -78,7 +78,7 @@
 
 .sidebar-link {
   position: absolute;
-  margin-top: 20px;
+  margin-top: 25px;
   max-height: 90%;
   overflow-y: auto;
   transition: 0.4s ease;
