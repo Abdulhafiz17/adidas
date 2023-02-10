@@ -948,6 +948,10 @@ export default {
           data.branch_price = trade.Discounts.branch_price;
         }
       }
+      if (data.admin_price < 0 || data.branch_price < 0) {
+        data.admin_price = 0;
+        data.branch_price = 0;
+      }
       updateTrade(status, data)
         .then((Response) => {
           this.getTrades(this.order);
