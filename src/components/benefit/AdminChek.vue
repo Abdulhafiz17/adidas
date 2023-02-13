@@ -12,6 +12,7 @@
         </div>
         <div class="modal-body">
           <div id="adminCheck">
+            <div class="date">{{ date }}</div>
             <span>
               Umumiy savdo:
               <strong>
@@ -63,6 +64,7 @@ export default {
   data() {
     return {
       _: Intl.NumberFormat(),
+      date: new Date().toLocaleDateString("ru-RU"),
       data: null,
     };
   },
@@ -115,11 +117,15 @@ export default {
             justify-content: space-between;
             align-items: center;
           }
+          .date {
+            text-align: center;
+          }
         </style>
       `;
       winPrint.document.body.innerHTML = div;
       setTimeout(() => {
         winPrint.print();
+        winPrint.close();
       }, 100);
     },
   },
