@@ -102,12 +102,41 @@
                 ' ' +
                 branch_currency
               " -->
-            <span>
-              Chegirmadan qolgan summa:
+            <strong>Kirim</strong>
+            <span v-show="item.incomes_trade.length">
+              Savdo:
               <strong>
-                {{
-                  _.format(item.trade_total_discount) + " " + branch_currency
-                }}
+                <span
+                  v-for="item2 in item.incomes_trade"
+                  :key="item2"
+                  v-show="item2.sum_price"
+                >
+                  {{
+                    _.format(item2.sum_price) +
+                    " " +
+                    branch_currency +
+                    " " +
+                    item2.type
+                  }}
+                </span>
+              </strong>
+            </span>
+            <span v-show="item.incomes_loan.length">
+              Nasiya:
+              <strong>
+                <span
+                  v-for="item2 in item.incomes_loan"
+                  :key="item2"
+                  v-show="item2.sum_price"
+                >
+                  {{
+                    _.format(item2.sum_price) +
+                    " " +
+                    branch_currency +
+                    " " +
+                    item2.type
+                  }}
+                </span>
               </strong>
             </span>
             <hr />
@@ -127,7 +156,15 @@
               }}</strong>
             </span>
             <span>
-              Daromad:
+              Chegirmadan qolgan summa:
+              <strong class="text-success">
+                {{
+                  _.format(item.trade_total_discount) + " " + branch_currency
+                }}
+              </strong>
+            </span>
+            <span>
+              Ish xaqqi:
               <strong
                 :class="
                   item.total_profit > 0
@@ -727,8 +764,9 @@ export default {
 }
 
 .day span {
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  align-items: center;
 }
 </style>
