@@ -12,6 +12,13 @@
         </div>
         <div class="modal-body">
           <div id="adminCheck">
+            <div class="check-img">
+              <img
+                :src="api.url_to_files + '/' + logo"
+                :alt="logo"
+                @error="getBranch()"
+              />
+            </div>
             <div class="date">{{ date }}</div>
             <span>
               Umumiy savdo:
@@ -65,6 +72,8 @@ export default {
     return {
       _: Intl.NumberFormat(),
       date: new Date().toLocaleDateString("ru-RU"),
+      branch_id: localStorage["branch_id"],
+      logo: null,
       data: null,
     };
   },
@@ -73,8 +82,18 @@ export default {
       return this.$props.branchCurrency;
     },
   },
-  created() {},
+  setup() {
+    return { api };
+  },
+  created() {
+    this.getBranch();
+  },
   methods: {
+    getBranch() {
+      api.branch(this.branch_id).then((res) => {
+        this.logo = res.data.logo.logo;
+      });
+    },
     start() {
       this.get();
     },
@@ -120,6 +139,16 @@ export default {
           .date {
             text-align: center;
           }
+          .check-img {
+            padding: 10px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          }
+          img {
+            width: 50%;
+            object-fit: contain;
+          }
         </style>
       `;
       winPrint.document.body.innerHTML = div;
@@ -137,5 +166,16 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.check-img {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+img {
+  width: 50%;
+  object-fit: contain;
 }
 </style>
