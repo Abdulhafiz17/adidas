@@ -438,13 +438,15 @@
                       }}
                       <span v-if="i.Trades.discount">
                         {{
-                          `( adminga: ${Intl.NumberFormat().format(
-                            i.Discounts?.admin_price
-                          )} ${
-                            i.Currencies.currency
-                          } filialga: ${Intl.NumberFormat().format(
-                            i.Discounts?.branch_price
-                          )} ${i.Currencies.currency} )`
+                          i.Trades.price == i.Trades.discount
+                            ? i.Trades.comment
+                            : `( adminga: ${Intl.NumberFormat().format(
+                                i.Discounts?.admin_price
+                              )} ${
+                                i.Currencies.currency
+                              } filialga: ${Intl.NumberFormat().format(
+                                i.Discounts?.branch_price
+                              )} ${i.Currencies.currency} )`
                         }}
                       </span>
                     </td>
