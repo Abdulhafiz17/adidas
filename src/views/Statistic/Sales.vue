@@ -122,7 +122,9 @@
             <hr />
             <span>
               Adminga beriladigan summa:
-              <strong>{{ _.format(item.admin_price) }}</strong>
+              <strong>{{
+                _.format(item.admin_price) + " " + branch_currency
+              }}</strong>
             </span>
             <span>
               Daromad:
