@@ -5,7 +5,7 @@
     v-show="false"
   ></button>
   <div class="modal fade" id="admin-check">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h4>Admin hisoboti</h4>
@@ -26,6 +26,39 @@
                 {{ _.format(data?.trade_total_price) + " " + currency }}
               </strong>
             </span>
+            <hr />
+            <div class="date">Kirim</div>
+            <span v-show="data?.incomes_trade.length">
+              Savdo
+              <strong>
+                <span
+                  v-for="item in data?.incomes_trade"
+                  :key="item"
+                  v-show="item.sum_price"
+                >
+                  {{
+                    _.format(item.sum_price) + " " + currency + " " + item.type
+                  }}
+                  <br />
+                </span>
+              </strong>
+            </span>
+            <span v-show="data?.incomes_loan.length">
+              Nasiya
+              <strong>
+                <span
+                  v-for="item in data?.incomes_loan"
+                  :key="item"
+                  v-show="item.sum_price"
+                >
+                  {{
+                    _.format(item.sum_price) + " " + currency + " " + item.type
+                  }}
+                </span>
+                <br />
+              </strong>
+            </span>
+            <hr />
             <span>
               Umumiy chiqim:
               <strong>
