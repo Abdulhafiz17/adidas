@@ -620,6 +620,7 @@ export default {
         order_id: 0,
         admin_price: 0,
         branch_price: 0,
+        comment: "",
       },
       trades: [],
       customer_type: "",
@@ -905,6 +906,7 @@ export default {
         order_id: this.order.id,
         admin_price: 0,
         branch_price: 0,
+        comment: trade.Trades.comment,
       };
       if (type == "<") {
         data.quantity = 1;
@@ -952,6 +954,12 @@ export default {
         data.admin_price = 0;
         data.branch_price = 0;
       }
+      if (
+        trade.Trades.price == trade.Trades.discount &&
+        !trade.Trades.comment
+      ) {
+        this.addCommentToTrade(trade);
+      }
       updateTrade(status, data)
         .then((Response) => {
           this.getTrades(this.order);
@@ -962,6 +970,28 @@ export default {
             this.getTrades(this.order);
           });
         });
+    },
+    addCommentToTrade(trade) {
+      swal({
+        icon: "info",
+        title: "Izoh kiriting !",
+        text: "Ushbu chegirma uchun izoh talab etiladi",
+        closeOnEsc: false,
+        closeOnClickOutside: false,
+        content: {
+          element: "input",
+          attributes: {
+            class: "form-control",
+          },
+        },
+      }).then((value) => {
+        if (value) {
+          trade.Trades.comment = value;
+          this.putTrade("", trade);
+        } else {
+          this.addCommentToTrade(trade);
+        }
+      });
     },
     countPercent(trade) {
       let percent;
