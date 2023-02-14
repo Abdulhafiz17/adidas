@@ -244,6 +244,12 @@
               />
               <div class="input-group-text">filialga</div>
             </div>
+            <div
+              class="input-group input-group-sm"
+              v-if="item.Trades.price == item.Trades.discount"
+            >
+              {{ item.Trades.comment }}
+            </div>
           </td>
           <td>
             <span
