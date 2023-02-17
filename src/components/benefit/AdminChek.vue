@@ -162,7 +162,6 @@ export default {
         .distribute()
         .then((res) => {
           delete res.data.orders;
-          console.log(res.data);
           this.data = res.data;
           this.$emit("setloading", false);
           document.querySelector(`[data-target="#admin-check"]`).click();
