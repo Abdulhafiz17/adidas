@@ -154,6 +154,7 @@ export default {
   data() {
     return {
       _: Intl.NumberFormat(),
+      branch_id: localStorage["branch_id"],
       logo: localStorage["branch_logo"],
       phone: localStorage["branch_phone"],
       order: null,
@@ -188,7 +189,14 @@ export default {
     },
     start() {
       this.$emit("setloading", true);
-      this.getOrder();
+      this.getBranch();
+    },
+    getBranch() {
+      api.branch(this.branch_id).then((res) => {
+        this.logo = res.data.logo.logo;
+        this.phone = res.data.branch.phone;
+        this.getOrder();
+      });
     },
     getOrder() {
       api

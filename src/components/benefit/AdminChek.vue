@@ -21,9 +21,21 @@
             </div>
             <div class="date">{{ date }}</div>
             <span>
+              Umumiy tan narx:
+              <strong>
+                {{ _.format(data?.trade_total_tan_narx) + " " + currency }}
+              </strong>
+            </span>
+            <span>
               Umumiy savdo:
               <strong>
                 {{ _.format(data?.trade_total_price) + " " + currency }}
+              </strong>
+            </span>
+            <span>
+              Umumiy vozvrat:
+              <strong>
+                {{ _.format(data?.returned_price) + " " + currency }}
               </strong>
             </span>
             <hr />
@@ -74,8 +86,22 @@
               </strong>
             </span>
             <hr />
+            <div class="date">Chegirmadan qolgan summa</div>
             <span>
               Adminga:
+              <strong>
+                {{ _.format(data?.total_admin_discount) + " " + currency }}
+              </strong>
+            </span>
+            <span>
+              Filialga:
+              <strong>
+                {{ _.format(data?.trade_total_discount) + " " + currency }}
+              </strong>
+            </span>
+            <hr />
+            <span>
+              Admin summa:
               <strong>
                 {{ _.format(data?.admin_price) + " " + currency }}
               </strong>
@@ -135,6 +161,8 @@ export default {
       api
         .distribute()
         .then((res) => {
+          delete res.data.orders;
+          console.log(res.data);
           this.data = res.data;
           this.$emit("setloading", false);
           document.querySelector(`[data-target="#admin-check"]`).click();
