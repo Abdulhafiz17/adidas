@@ -567,7 +567,6 @@ export default {
     getBranch() {
       branch(localStorage["branch_id"])
         .then((res) => {
-          console.log(res.data);
           this.logo = res.data.logo?.logo;
           this.phone = res.data.branch?.phone;
           this.name = res.data.branch?.name;
@@ -703,11 +702,13 @@ export default {
           justify-content: end;
         }
         #tag_body > *:first-of-type span {
-          margin: 0 3px;
+          margin: -3px 3px 0 3px;
           padding: 0 2px;
           color: white;
           background-color: black;
           border-radius: 3px;
+          font-size: 18px;
+          line-height: 18px;
         }
         #tag_body > *:first-of-type > div:nth-child(1) {
           padding-right: 25px;
@@ -872,11 +873,13 @@ export default {
   justify-content: end;
 }
 #tag_body > *:first-of-type span {
-  margin: 0 3px;
+  margin: -3px 3px 0 3px;
   padding: 0 2px;
   color: white;
   background-color: black;
   border-radius: 3px;
+  font-size: 18px;
+  line-height: 18px;
 }
 #tag_body > *:first-of-type > div:nth-child(1) {
   padding-right: 25px;
