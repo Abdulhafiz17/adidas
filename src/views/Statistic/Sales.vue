@@ -18,7 +18,7 @@
     <div class="col-md-3 my-1">
       <button
         class="btn btn-sm btn-block btn-outline-secondary"
-        @click="getDays()"
+        @click="getSumStatistics()"
       >
         <span class="far fa-circle-check" /> Qidirish
       </button>
@@ -49,10 +49,134 @@
     <canvas id="salesChart" width="600" height="250" />
   </div>
 
+  <details v-if="template == 'card'">
+    <summary>Umumiy</summary>
+    <div class="row p-2" v-for="item in sum" :key="item">
+      <div class="col-md-4 mb-1">
+        <div class="card shadow">
+          <div class="card-body">
+            Umumiy tan narx:
+            <strong>
+              {{ _.format(item.trade_total_tan_narx) + " " + branch_currency }}
+            </strong>
+            <hr />
+            Umumiy savdo:
+            <strong>
+              {{ _.format(item.trade_total_price) + " " + branch_currency }}
+            </strong>
+            <hr />
+            Vozvrat:
+            <strong>
+              {{ _.format(item.returned_price) + " " + branch_currency }}
+            </strong>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-1">
+        <div class="card shadow">
+          <div class="card-body">
+            Kirim
+            <hr />
+            <span v-show="item.incomes_trade.length">
+              Savdo
+              <br />
+              <strong>
+                <span
+                  v-for="item2 in item.incomes_trade"
+                  :key="item2"
+                  v-show="item2.sum_price"
+                >
+                  {{
+                    _.format(item2.sum_price) +
+                    " " +
+                    branch_currency +
+                    " " +
+                    item2.type
+                  }}
+                  <br />
+                </span>
+              </strong>
+            </span>
+            <span v-show="item.incomes_loan.length">
+              <hr />
+              Nasiya
+              <br />
+              <strong>
+                <span
+                  v-for="item2 in item.incomes_loan"
+                  :key="item2"
+                  v-show="item2.sum_price"
+                >
+                  {{
+                    _.format(item2.sum_price) +
+                    " " +
+                    branch_currency +
+                    " " +
+                    item2.type
+                  }}
+                  <br />
+                </span>
+              </strong>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-1">
+        <div class="card shadow">
+          <div class="card-body">
+            Chiqimlar
+            <hr />
+            <strong>
+              <span v-for="item2 in item.expenses" :key="item">
+                {{ _.format(item2.sum_price) + " " + item2.currency }} <br />
+              </span>
+            </strong>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="card shadow">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                Adminga beriladigan summa <br />
+                <strong>{{
+                  _.format(item.admin_price) + " " + branch_currency
+                }}</strong>
+              </div>
+              <div class="col-md-4">
+                Chegirmadan qolgan summa <br />
+                <strong class="text-success">
+                  {{
+                    _.format(item.trade_total_discount) + " " + branch_currency
+                  }}
+                </strong>
+              </div>
+              <div class="col-md-4">
+                Ish xaqqi <br />
+                <strong
+                  :class="
+                    item.total_profit > 0
+                      ? 'text-success'
+                      : item.total_profit < 0
+                      ? 'text-danger'
+                      : ''
+                  "
+                >
+                  {{ _.format(item.total_profit) + " " + branch_currency }}
+                </strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
   <div
     v-if="template == 'card'"
     class="responsive p-1"
-    style="max-height: 70vh"
+    style="max-height: 64vh"
   >
     <div class="row">
       <div class="col-md-4 col-sm-6 my-1" v-for="item in days" :key="item">
@@ -508,6 +632,7 @@ import {
   loan,
   returnedProducts,
   statisticOrders,
+  tradeSumStatistics,
   tradeBalance,
   trades,
   users,
@@ -539,6 +664,7 @@ export default {
         .toISOString()
         .substring(0, 10),
       users: [],
+      sum: null,
       days: [],
       day: null,
       order: null,
@@ -562,6 +688,18 @@ export default {
       users(this.branch_id, 0, 25)
         .then((Response) => {
           this.users = Response.data.data;
+          this.getSumStatistics();
+        })
+        .catch((error) => {
+          this.$emit("setloading", false);
+          catchError(error);
+        });
+    },
+    getSumStatistics() {
+      this.$emit("setloading", true);
+      tradeSumStatistics(this.from_date, this.to_date, this.branch_id)
+        .then((res) => {
+          this.sum = res.data;
           this.getDays();
         })
         .catch((error) => {
