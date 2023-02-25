@@ -587,3 +587,11 @@ export function statisticDaily(date, branch_id) {
     `get_daily_statistics?day=${date}&branch_id_admin=${branch_id}`
   );
 }
+export function tradeSumStatistics(from_time, to_time, branch_id) {
+  let time_query = ``;
+  if (from_time && to_time)
+    time_query = `from_time=${from_time}&to_time=${to_time}&`;
+  return instance.get(
+    `get_trade_sum_statistics?${time_query}branch_id_admin=${branch_id}`
+  );
+}
