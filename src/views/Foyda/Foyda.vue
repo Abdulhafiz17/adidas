@@ -430,51 +430,12 @@
               </table>
             </div>
           </details>
-          <div class="input-group input-group-sm my-1">
-            <button
-              class="btn btn-sm"
-              @click="getDistribute(0, limit)"
-              :disabled="page == 0"
-            >
-              <i class="fa fa-angle-double-left" />
-            </button>
-            <button
-              class="btn btn-sm"
-              @click="getDistribute(page - 1, limit)"
-              :disabled="page == 0"
-            >
-              <i class="fa fa-angle-left" />
-            </button>
-            <button class="btn btn-sm">
-              {{ page + 1 }}
-            </button>
-            <button
-              class="btn btn-sm"
-              @click="getDistribute(page + 1, limit)"
-              :disabled="page == pages - 1 || pages == 0"
-            >
-              <i class="fa fa-angle-right" />
-            </button>
-            <button
-              class="btn btn-sm"
-              @click="getDistribute(pages - 1, limit)"
-              :disabled="page == pages - 1 || pages == 0"
-            >
-              <i class="fa fa-angle-double-right" />
-            </button>
-            <div class="input-group-append">
-              <select
-                class="form-select form-select-sm"
-                v-model="limit"
-                @change="getDistribute(page, limit)"
-              >
-                <option disabled value="">limit</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
-          </div>
+          <Pagination
+            :page="page"
+            :pages="pages"
+            :limit="limit"
+            @get="getDistribute"
+          />
         </div>
         <div class="modal-footer">
           <button class="btn btn-outline-danger" data-dismiss="modal">
@@ -493,6 +454,7 @@
 </template>
 
 <script>
+import Pagination from "@/components/Pagination/Pagination.vue";
 import AdminChek from "@/components/benefit/AdminChek.vue";
 import {
   branch,
@@ -513,7 +475,7 @@ import swal from "sweetalert";
 export default {
   name: "Benefit",
   emits: ["setloading"],
-  components: { AdminChek },
+  components: { AdminChek, Pagination },
   data() {
     return {
       branch_id: localStorage.getItem("branch_id"),

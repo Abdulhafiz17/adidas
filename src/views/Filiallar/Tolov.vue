@@ -18,7 +18,7 @@
       <div class="col-md-2">
         <button
           class="btn btn-sm btn-block btn-outline-secondary"
-          @click="getExpenses(0, 100)"
+          @click="getExpenses(0, 25)"
         >
           <i class="far fa-circle-check" />
         </button>
@@ -65,51 +65,12 @@
         <tfoot>
           <tr>
             <td colspan="4">
-              <div class="input-group input-group-sm">
-                <button
-                  class="btn btn-sm"
-                  @click="getExpenses(0, limit)"
-                  :disabled="page == 0"
-                >
-                  <i class="fa fa-angle-double-left" />
-                </button>
-                <button
-                  class="btn btn-sm"
-                  @click="getExpenses(page - 1, limit)"
-                  :disabled="page == 0"
-                >
-                  <i class="fa fa-angle-left" />
-                </button>
-                <button class="btn btn-sm">
-                  {{ page + 1 }}
-                </button>
-                <button
-                  class="btn btn-sm"
-                  @click="getExpenses(page + 1, limit)"
-                  :disabled="page == pages - 1 || pages == 0"
-                >
-                  <i class="fa fa-angle-right" />
-                </button>
-                <button
-                  class="btn btn-sm"
-                  @click="getExpenses(pages - 1, limit)"
-                  :disabled="page == pages - 1 || pages == 0"
-                >
-                  <i class="fa fa-angle-double-right" />
-                </button>
-                <div class="input-group-append">
-                  <select
-                    class="form-select form-select-sm"
-                    v-model="limit"
-                    @change="getExpenses(page, limit)"
-                  >
-                    <option disabled value="">limit</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                  </select>
-                </div>
-              </div>
+              <Pagination
+                :page="page"
+                :pages="pages"
+                :limit="limit"
+                @get="getExpenses"
+              />
             </td>
           </tr>
         </tfoot>
@@ -126,14 +87,16 @@ import {
   confirmAdminExpense,
   success,
 } from "@/components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   name: "Tolov",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       page: 0,
       pages: 1,
-      limit: 100,
+      limit: 25,
       from_date: "",
       to_date: "",
       branch: null,
@@ -143,7 +106,7 @@ export default {
     };
   },
   created() {
-    this.getBranch(0, 100);
+    this.getBranch(0, 25);
   },
   methods: {
     getBranch() {
@@ -162,7 +125,7 @@ export default {
                 this.currencies.push(item.currency);
               }
               if (index == this.balances.length - 1) {
-                this.getExpenses(0, 100);
+                this.getExpenses(0, 25);
               }
             });
           } else {

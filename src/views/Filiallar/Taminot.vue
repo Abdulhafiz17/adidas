@@ -12,7 +12,7 @@
         aria-selected="true"
         @click="
           warehouse_id = 0;
-          getTransfersWaiting(0, 100);
+          getTransfersWaiting(0, 25);
         "
       >
         Kutilayotgan
@@ -30,7 +30,7 @@
         aria-selected="false"
         @click="
           warehouse_id = 0;
-          getTransfersClosed(0, 100);
+          getTransfersClosed(0, 25);
         "
       >
         Yakunlangan
@@ -70,7 +70,7 @@
         <div class="col-md-1 mb-1">
           <button
             class="btn btn-sm btn-block btn-outline-secondary"
-            @click="getTransfersWaiting(0, 100)"
+            @click="getTransfersWaiting(0, 25)"
           >
             <i class="far fa-circle-check" />
           </button>
@@ -115,51 +115,12 @@
           <tfoot>
             <tr>
               <td colspan="6">
-                <div class="input-group input-group-sm">
-                  <button
-                    class="btn btn-sm"
-                    @click="getTransfersWaiting(0, limit)"
-                    :disabled="page == 0"
-                  >
-                    <i class="fa fa-angle-double-left" />
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    @click="getTransfersWaiting(page - 1, limit)"
-                    :disabled="page == 0"
-                  >
-                    <i class="fa fa-angle-left" />
-                  </button>
-                  <button class="btn btn-sm">
-                    {{ page + 1 }}
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    @click="getTransfersWaiting(page + 1, limit)"
-                    :disabled="page == pages - 1 || pages == 0"
-                  >
-                    <i class="fa fa-angle-right" />
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    @click="getTransfersWaiting(pages - 1, limit)"
-                    :disabled="page == pages - 1 || pages == 0"
-                  >
-                    <i class="fa fa-angle-double-right" />
-                  </button>
-                  <div class="input-group-append">
-                    <select
-                      class="form-select form-select-sm"
-                      v-model="limit"
-                      @change="getTransfersWaiting(page, limit)"
-                    >
-                      <option disabled value="">limit</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </div>
-                </div>
+                <Pagination
+                  :page="page"
+                  :pages="pages"
+                  :limit="limit"
+                  @get="getTransfersWaiting"
+                />
               </td>
             </tr>
           </tfoot>
@@ -198,7 +159,7 @@
         <div class="col-md-1 mb-1">
           <button
             class="btn btn-sm btn-block btn-outline-secondary"
-            @click="getTransfersClosed(0, 100)"
+            @click="getTransfersClosed(0, 25)"
           >
             <i class="far fa-circle-check" />
           </button>
@@ -243,51 +204,12 @@
           <tfoot>
             <tr>
               <td colspan="6">
-                <div class="input-group input-group-sm">
-                  <button
-                    class="btn btn-sm"
-                    @click="getTransfersClosed(0, limit)"
-                    :disabled="page == 0"
-                  >
-                    <i class="fa fa-angle-double-left" />
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    @click="getTransfersClosed(page - 1, limit)"
-                    :disabled="page == 0"
-                  >
-                    <i class="fa fa-angle-left" />
-                  </button>
-                  <button class="btn btn-sm">
-                    {{ page + 1 }}
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    @click="getTransfersClosed(page + 1, limit)"
-                    :disabled="page == pages - 1 || pages == 0"
-                  >
-                    <i class="fa fa-angle-right" />
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    @click="getTransfersClosed(pages - 1, limit)"
-                    :disabled="page == pages - 1 || pages == 0"
-                  >
-                    <i class="fa fa-angle-double-right" />
-                  </button>
-                  <div class="input-group-append">
-                    <select
-                      class="form-select form-select-sm"
-                      v-model="limit"
-                      @change="getTransfersClosed(page, limit)"
-                    >
-                      <option disabled value="">limit</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </div>
-                </div>
+                <Pagination
+                  :page="page1"
+                  :pages="pages1"
+                  :limit="limit1"
+                  @get="getTransfersClosed"
+                />
               </td>
             </tr>
           </tfoot>
@@ -299,14 +221,19 @@
 
 <script>
 import { catchError, transfers, warehouses } from "@/components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   name: "Taminot",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       page: 0,
       pages: 1,
-      limit: 100,
+      limit: 25,
+      page1: 0,
+      pages1: 1,
+      limit1: 25,
       from_date: "",
       to_date: "",
       from_date_2: "",
@@ -326,7 +253,7 @@ export default {
       warehouses()
         .then((Response) => {
           this.warehouses = Response.data;
-          this.getTransfersWaiting(0, 100);
+          this.getTransfersWaiting(0, 25);
         })
         .catch((error) => {
           this.$emit("setloading", false);
@@ -347,6 +274,7 @@ export default {
         .then((Response) => {
           this.page = Response.data.current_page;
           this.pages = Response.data.pages;
+          this.limit = Response.data.limit;
           this.transfers_waiting = Response.data.data;
           this.$emit("setloading", false);
         })
@@ -367,8 +295,9 @@ export default {
         this.to_date_2
       )
         .then((Response) => {
-          this.page = Response.data.current_page;
-          this.pages = Response.data.pages;
+          this.page1 = Response.data.current_page;
+          this.pages1 = Response.data.pages;
+          this.limit1 = Response.data.limit;
           this.transfers_closed = Response.data.data;
           this.$emit("setloading", false);
         })

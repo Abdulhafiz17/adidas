@@ -39,7 +39,10 @@
             balance = null;
             trades = [];
             loans = [];
-            getReturnedProducts(0, 0, 100);
+            page = 0;
+            pages = 1;
+            limit = 100;
+            getReturnedProducts(0, 100);
           "
         >
           Qaytarib olingan mahsulotlar
@@ -265,51 +268,12 @@
             <tfoot>
               <tr>
                 <td colspan="6">
-                  <div class="input-group input-group-sm">
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrades(order.id, 0, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-double-left" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrades(order.id, page - 1, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-left" />
-                    </button>
-                    <button class="btn btn-sm">
-                      {{ page + 1 }}
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrades(order.id, page + 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-right" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrades(order.id, pages - 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-double-right" />
-                    </button>
-                    <div class="input-group-append">
-                      <select
-                        class="form-select form-select-sm"
-                        v-model="limit"
-                        @change="getTrades(order.id, page, limit)"
-                      >
-                        <option disabled value="">limit</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                    </div>
-                  </div>
+                  <Pagination
+                    :page="page"
+                    :pages="pages"
+                    :limit="limit"
+                    @get="getTrades"
+                  />
                 </td>
               </tr>
             </tfoot>
@@ -355,51 +319,12 @@
             <tfoot>
               <tr>
                 <td colspan="4">
-                  <div class="input-group input-group-sm">
-                    <button
-                      class="btn btn-sm"
-                      @click="getReturnedProducts(0, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-double-left" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getReturnedProducts(page - 1, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-left" />
-                    </button>
-                    <button class="btn btn-sm">
-                      {{ page + 1 }}
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getReturnedProducts(page + 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-right" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getReturnedProducts(pages - 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-double-right" />
-                    </button>
-                    <div class="input-group-append">
-                      <select
-                        class="form-select form-select-sm"
-                        v-model="limit"
-                        @change="getReturnedProducts(page, limit)"
-                      >
-                        <option disabled value="">limit</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                    </div>
-                  </div>
+                  <Pagination
+                    :page="page"
+                    :pages="pages"
+                    :limit="limit"
+                    @get="getReturnedProducts"
+                  />
                 </td>
               </tr>
             </tfoot>
@@ -543,9 +468,11 @@ import {
   trades,
 } from "@/components/Api/Api";
 import swal from "sweetalert";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   name: "ReturnProduct",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       page: 0,
@@ -648,19 +575,19 @@ export default {
       tradeBalance(id)
         .then((Response) => {
           this.balance = Response.data;
-          this.getTrades(id, 0, 100);
+          this.getTrades(0, 100);
         })
         .catch((error) => {
           this.$emit("setloading", false);
           catchError(error);
         });
     },
-    getTrades(id, page, limit) {
+    getTrades(page, limit) {
       this.$emit("setloading", true);
-      trades(id, page, limit)
+      trades(this.order.id, page, limit)
         .then((Response) => {
           this.trades = Response.data.data;
-          this.getReturnedProducts(id, 0, 100);
+          this.getReturnedProducts(0, 100);
         })
         .catch((error) => {
           this.$emit("setloading", false);
@@ -706,8 +633,9 @@ export default {
           catchError(error);
         });
     },
-    getReturnedProducts(id, page, limit) {
+    getReturnedProducts(page, limit) {
       this.$emit("setloading", true);
+      let id = this.order ? this.order.id : 0;
       returnedProducts(id, page, limit)
         .then((Response) => {
           this.returned_products = Response.data.data;

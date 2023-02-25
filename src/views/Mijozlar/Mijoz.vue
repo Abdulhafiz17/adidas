@@ -142,102 +142,19 @@
           <tfoot>
             <tr>
               <td colspan="6">
-                <div class="input-group input-group-sm justify-content-center">
-                  <button
-                    class="btn btn-sm"
-                    @click="getTrades(item.id, 0, limit_2)"
-                    :disabled="page_2 == 0"
-                  >
-                    <i class="fa fa-angle-double-left" />
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    @click="getTrades(item.id, page_2 - 1, limit_2)"
-                    :disabled="page_2 == 0"
-                  >
-                    <i class="fa fa-angle-left" />
-                  </button>
-                  <button class="btn btn-sm">
-                    {{ page_2 + 1 }}
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    @click="getTrades(item.id, page_2 + 1, limit_2)"
-                    :disabled="page_2 == pages_2 - 1 || pages_2 == 0"
-                  >
-                    <i class="fa fa-angle-right" />
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    @click="getTrades(item.id, pages_2 - 1, limit_2)"
-                    :disabled="page_2 == pages_2 - 1 || pages_2 == 0"
-                  >
-                    <i class="fa fa-angle-double-right" />
-                  </button>
-                  <div class="input-group-append">
-                    <select
-                      class="form-select form-select-sm"
-                      v-model="limit_2"
-                      @change="getTrades(item.id, page_2, limit_2)"
-                    >
-                      <option disabled value="">limit</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </div>
-                </div>
+                <Pagination
+                  :page="page_2"
+                  :pages="pages_2"
+                  :limit="limit_2"
+                  @get="getTrades"
+                />
               </td>
             </tr>
           </tfoot>
         </table>
       </div>
     </details>
-    <div class="input-group input-group-sm my-1 justify-content-center">
-      <button
-        class="btn btn-sm"
-        @click="getOrders(0, limit)"
-        :disabled="page == 0"
-      >
-        <i class="fa fa-angle-double-left" />
-      </button>
-      <button
-        class="btn btn-sm"
-        @click="getOrders(page - 1, limit)"
-        :disabled="page == 0"
-      >
-        <i class="fa fa-angle-left" />
-      </button>
-      <button class="btn btn-sm">
-        {{ page + 1 }}
-      </button>
-      <button
-        class="btn btn-sm"
-        @click="getOrders(page + 1, limit)"
-        :disabled="page == pages - 1 || pages == 0"
-      >
-        <i class="fa fa-angle-right" />
-      </button>
-      <button
-        class="btn btn-sm"
-        @click="getOrders(pages - 1, limit)"
-        :disabled="page == pages - 1 || pages == 0"
-      >
-        <i class="fa fa-angle-double-right" />
-      </button>
-      <div class="input-group-append">
-        <select
-          class="form-select form-select-sm"
-          v-model="limit"
-          @change="getOrders(page, limit)"
-        >
-          <option disabled value="">limit</option>
-          <option value="25">25</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-        </select>
-      </div>
-    </div>
+    <Pagination :page="page" :pages="pages" :limit="limit" @get="getOrders" />
   </div>
 </template>
 
@@ -252,9 +169,11 @@ import {
   tradeBalance,
   trades,
 } from "@/components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   name: "Mijoz",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       page: 0,
@@ -358,21 +277,21 @@ export default {
       tradeBalance(id)
         .then((Response) => {
           this.balance = Response.data;
-          this.getTrades(id, 0, 100);
+          this.getTrades(0, 100);
         })
         .catch((error) => {
           this.$emit("setloading", false);
           catchError(error);
         });
     },
-    getTrades(id, page, limit) {
+    getTrades(page, limit) {
       this.$emit("setloading", true);
-      trades(id, page, limit)
+      trades(this.order.id, page, limit)
         .then((Response) => {
           this.page_2 = Response.data.current_page;
           this.pages_2 = Response.data.pages;
           this.trades = Response.data.data;
-          this.getReturnedProducts(id, page, limit);
+          this.getReturnedProducts(this.order.id, page, limit);
         })
         .catch((error) => {
           this.$emit("setloading", false);

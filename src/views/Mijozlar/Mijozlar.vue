@@ -65,6 +65,9 @@
             </div>
           </div>
         </div>
+        <div class="col-12">
+          <Pagination :page="page" :pages="pages" :limit="limit" @get="get" />
+        </div>
       </div>
     </div>
   </div>
@@ -153,9 +156,11 @@ import {
   success,
   updateCustomer,
 } from "@/components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   name: "Mijozlar",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       search: "",
@@ -165,12 +170,15 @@ export default {
         address: "",
         comment: "",
       },
+      page: 0,
+      pages: 1,
+      limit: 25,
       mijozlar: [],
       editMijoz: {},
     };
   },
   created() {
-    this.get(0, 100);
+    this.get(0, 25);
   },
   computed: {
     filter: function () {
@@ -199,6 +207,9 @@ export default {
       this.$emit("setloading", true);
       customers(page, limit, "")
         .then((Response) => {
+          this.page = Response.data.current_page;
+          this.pages = Response.data.pages;
+          this.limit = Response.data.limit;
           this.mijozlar = Response.data.data;
           this.$emit("setloading", false);
         })
@@ -219,7 +230,7 @@ export default {
           };
           document.querySelector("#close_modal").click();
           success().then(() => {
-            this.get(0, 100);
+            this.get(0, 25);
           });
         })
         .catch((error) => {
@@ -233,7 +244,7 @@ export default {
         .then((Response) => {
           document.querySelector("#close-modal").click();
           success().then(() => {
-            this.get(0, 100);
+            this.get(0, 25);
           });
         })
         .catch((error) => {

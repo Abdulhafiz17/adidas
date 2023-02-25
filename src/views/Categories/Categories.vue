@@ -43,7 +43,12 @@
     <div class="row">
       <div class="col-sm-12 my-1">
         <details v-for="item in categories" :key="item">
-          <summary @click="getProducts(item.Categories, 0, 50)">
+          <summary
+            @click="
+              category_for_products = item.Categories;
+              getProducts(0, 50);
+            "
+          >
             <h5>{{ item.Categories.name }}</h5>
           </summary>
           <div class="table-responsive">
@@ -133,51 +138,7 @@
               <tfoot>
                 <tr>
                   <td colspan="9">
-                    <div class="input-group input-group-sm">
-                      <button
-                        class="btn btn-sm"
-                        @click="getProducts(item.Categories, 0, limit)"
-                        :disabled="page == 0"
-                      >
-                        <i class="fa fa-angle-double-left" />
-                      </button>
-                      <button
-                        class="btn btn-sm"
-                        @click="getProducts(item.Categories, page - 1, limit)"
-                        :disabled="page == 0"
-                      >
-                        <i class="fa fa-angle-left" />
-                      </button>
-                      <button class="btn btn-sm">
-                        {{ page + 1 }}
-                      </button>
-                      <button
-                        class="btn btn-sm"
-                        @click="getProducts(item.Categories, page + 1, limit)"
-                        :disabled="page == pages - 1 || pages == 0"
-                      >
-                        <i class="fa fa-angle-right" />
-                      </button>
-                      <button
-                        class="btn btn-sm"
-                        @click="getProducts(item.Categories, pages - 1, limit)"
-                        :disabled="page == pages - 1 || pages == 0"
-                      >
-                        <i class="fa fa-angle-double-right" />
-                      </button>
-                      <div class="input-group-append">
-                        <select
-                          class="form-select form-select-sm"
-                          v-model="limit"
-                          @change="getProducts(item.Categories, page, limit)"
-                        >
-                          <option disabled value="">limit</option>
-                          <option value="25">25</option>
-                          <option value="50">50</option>
-                          <option value="100">100</option>
-                        </select>
-                      </div>
-                    </div>
+                    <Pagination :page="page" :pages="pages" :limit="limit" @get="getProducts" />
                   </td>
                 </tr>
               </tfoot>
@@ -186,51 +147,12 @@
         </details>
       </div>
       <div class="col-sm-12" v-if="categories.length">
-        <div class="input-group input-group-sm">
-          <button
-            class="btn btn-sm"
-            @click="get(0, limit)"
-            :disabled="page == 0"
-          >
-            <i class="fa fa-angle-double-left" />
-          </button>
-          <button
-            class="btn btn-sm"
-            @click="get(page - 1, limit)"
-            :disabled="page == 0"
-          >
-            <i class="fa fa-angle-left" />
-          </button>
-          <button class="btn btn-sm">
-            {{ page + 1 }}
-          </button>
-          <button
-            class="btn btn-sm"
-            @click="get(page + 1, limit)"
-            :disabled="page == pages - 1 || pages == 0"
-          >
-            <i class="fa fa-angle-right" />
-          </button>
-          <button
-            class="btn btn-sm"
-            @click="get(pages - 1, limit)"
-            :disabled="page == pages - 1 || pages == 0"
-          >
-            <i class="fa fa-angle-double-right" />
-          </button>
-          <div class="input-group-append">
-            <select
-              class="form-select form-select-sm"
-              v-model="limit"
-              @change="get(page, limit)"
-            >
-              <option disabled value="">limit</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
-          </div>
-        </div>
+        <Pagination
+          :page="page"
+          :pages="pages"
+          :limit="limit"
+          @get="get"
+        />
       </div>
     </div>
   </div>
@@ -522,10 +444,12 @@ import {
   updateProduct,
   uploadPhoto,
 } from "@/components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 import JsBarcode from "jsbarcode";
 export default {
   name: "Categories",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       url_to_files,
@@ -537,6 +461,10 @@ export default {
       pages: 1,
       limit: 50,
       categories: [],
+      page1: 0,
+      pages1: 1,
+      limit1: 50,
+      category_for_products: null,
       category: {
         name: null,
       },
@@ -605,13 +533,13 @@ export default {
           catchError(error);
         });
     },
-    getProducts(category, page, limit) {
+    getProducts(page, limit) {
       this.$emit("setloading", true);
-      categories(category.id, page, limit)
+      categories(this.category_for_products.id, page, limit)
         .then((Response) => {
-          this.page = Response.data.current_page;
-          this.pages = Response.data.pages;
-          category.products = Response.data.data;
+          this.page1 = Response.data.current_page;
+          this.pages1 = Response.data.pages;
+          this.category_for_products.products = Response.data.data;
           this.$emit("setloading", false);
         })
         .catch((error) => {

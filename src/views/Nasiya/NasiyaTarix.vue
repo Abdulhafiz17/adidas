@@ -97,51 +97,12 @@
             <tfoot>
               <tr>
                 <td colspan="3">
-                  <div class="input-group input-group-sm">
-                    <button
-                      class="btn btn-sm"
-                      @click="get(0, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-double-left" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="get(page - 1, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-left" />
-                    </button>
-                    <button class="btn btn-sm">
-                      {{ page + 1 }}
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="get(page + 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-right" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="get(pages - 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-double-right" />
-                    </button>
-                    <div class="input-group-append">
-                      <select
-                        class="form-select form-select-sm"
-                        v-model="limit"
-                        @change="get(page, limit)"
-                      >
-                        <option disabled value="">limit</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                    </div>
-                  </div>
+                  <Pagination
+                    :page="page"
+                    :pages="pages"
+                    :limit="limit"
+                    @get="get"
+                  />
                 </td>
               </tr>
             </tfoot>
@@ -269,51 +230,12 @@
             <tfoot>
               <tr>
                 <td colspan="5">
-                  <div class="input-group input-group-sm">
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrades(0, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-double-left" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrades(page - 1, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-left" />
-                    </button>
-                    <button class="btn btn-sm">
-                      {{ page + 1 }}
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrades(page + 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-right" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrades(pages - 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-double-right" />
-                    </button>
-                    <div class="input-group-append">
-                      <select
-                        class="form-select form-select-sm"
-                        v-model="limit"
-                        @change="getTrades(page, limit)"
-                      >
-                        <option disabled value="">limit</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                    </div>
-                  </div>
+                  <Pagination
+                    :page="page1"
+                    :pages="pages1"
+                    :limit="limit1"
+                    @get="getTrades"
+                  />
                 </td>
               </tr>
             </tfoot>
@@ -332,14 +254,19 @@ import {
   tradeBalance,
   trades,
 } from "@/components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   name: "NasiyaTarix",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       page: 0,
       pages: 1,
       limit: 100,
+      page1: 0,
+      pages1: 1,
+      limit1: 100,
       payments: [],
       order: null,
       income: [],
@@ -355,6 +282,9 @@ export default {
       this.$emit("setloading", true);
       incomes(this.$route.params.id, "loan", page, limit)
         .then((Response) => {
+          this.page = Response.data.current_page;
+          this.pages = Response.data.pages;
+          this.limit = Response.data.limit;
           this.payments = Response.data.data;
           this.$emit("setloading", false);
         })
@@ -390,16 +320,19 @@ export default {
       tradeBalance(id)
         .then((Response) => {
           this.balance = Response.data;
-          this.getTrades(id, 0, 100);
+          this.getTrades(0, 100);
         })
         .catch((error) => {
           this.$emit("setloading", false);
           catchError(error);
         });
     },
-    getTrades(id, page, limit) {
-      trades(id, page, limit)
+    getTrades(page, limit) {
+      trades(this.$route.params.order_id, page, limit)
         .then((Response) => {
+          this.page1 = Response.data.current_page;
+          this.pages1 = Response.data.pages;
+          this.limit1 = Response.data.limit;
           this.trades = Response.data.data;
           this.$emit("setloading", false);
         })

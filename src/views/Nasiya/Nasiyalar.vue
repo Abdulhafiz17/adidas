@@ -34,7 +34,11 @@
           aria-selected="true"
           @click="
             customer_id = 0;
-            (mijozlar = []), getFalse(0, 0, 100);
+            mijozlar = [];
+            page = 0;
+            pages = 1;
+            limit = 25;
+            getFalse(0, 25);
           "
         >
           Faol
@@ -52,7 +56,11 @@
           aria-selected="false"
           @click="
             customer_id = 0;
-            (mijozlar = []), getTrue(0, 0, 100);
+            mijozlar = [];
+            page = 0;
+            pages = 1;
+            limit = 25;
+            getTrue(0, 25);
           "
         >
           Yakunlangan
@@ -74,7 +82,7 @@
                   <select
                     class="form-select form-select-sm"
                     v-model="customer_id"
-                    @change="getFalse(customer_id, 0, limit)"
+                    @change="getFalse(0, limit)"
                   >
                     <option value="0">Mijoz</option>
                     <option v-for="i in mijozlar" :key="i" :value="i.id">
@@ -142,51 +150,12 @@
             <tfoot>
               <tr>
                 <td colspan="4">
-                  <div class="input-group input-group-sm">
-                    <button
-                      class="btn btn-sm"
-                      @click="getFalse(customer_id, 0, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-double-left" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getFalse(customer_id, page - 1, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-left" />
-                    </button>
-                    <button class="btn btn-sm">
-                      {{ page + 1 }}
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getFalse(customer_id, page + 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-right" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getFalse(customer_id, pages - 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-double-right" />
-                    </button>
-                    <div class="input-group-append">
-                      <select
-                        class="form-select form-select-sm"
-                        v-model="limit"
-                        @change="getFalse(customer_id, page, limit)"
-                      >
-                        <option disabled value="">limit</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                    </div>
-                  </div>
+                  <Pagination
+                    :page="page"
+                    :pages="pages"
+                    :limit="limit"
+                    @get="getFalse"
+                  />
                 </td>
               </tr>
             </tfoot>
@@ -207,7 +176,7 @@
                   <select
                     class="form-select form-select-sm"
                     v-model="customer_id"
-                    @change="getTrue(customer_id, 0, limit)"
+                    @change="getTrue(0, limit)"
                   >
                     <option value="0">Mijoz</option>
                     <option v-for="i in mijozlar" :key="i" :value="i.id">
@@ -246,51 +215,12 @@
             <tfoot>
               <tr>
                 <td colspan="4">
-                  <div class="input-group input-group-sm">
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrue(customer_id, 0, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-double-left" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrue(customer_id, page - 1, limit)"
-                      :disabled="page == 0"
-                    >
-                      <i class="fa fa-angle-left" />
-                    </button>
-                    <button class="btn btn-sm">
-                      {{ page + 1 }}
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrue(customer_id, page + 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-right" />
-                    </button>
-                    <button
-                      class="btn btn-sm"
-                      @click="getTrue(customer_id, pages - 1, limit)"
-                      :disabled="page == pages - 1 || pages == 0"
-                    >
-                      <i class="fa fa-angle-double-right" />
-                    </button>
-                    <div class="input-group-append">
-                      <select
-                        class="form-select form-select-sm"
-                        v-model="limit"
-                        @change="getTrue(customer_id, page, limit)"
-                      >
-                        <option disabled value="">limit</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                    </div>
-                  </div>
+                  <Pagination
+                    :page="page"
+                    :pages="pages"
+                    :limit="limit"
+                    @get="getTrue"
+                  />
                 </td>
               </tr>
             </tfoot>
@@ -355,15 +285,17 @@
 
 <script>
 import { catchError, loans, success, takeLoan } from "@/components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   name: "Nasiyalar",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       _: Intl.NumberFormat(),
       page: 0,
       pages: 1,
-      limit: 100,
+      limit: 25,
       loans: [],
       loans_true: [],
       loan: null,
@@ -375,15 +307,16 @@ export default {
     };
   },
   created() {
-    this.getFalse(0, this.page, this.limit);
+    this.getFalse(this.page, this.limit);
   },
   methods: {
-    getFalse(id, page, limit) {
+    getFalse(page, limit) {
       this.$emit("setloading", true);
-      loans(false, id, page, limit)
+      loans(false, this.customer_id, page, limit)
         .then((Response) => {
           this.page = Response.data.current_page;
           this.pages = Response.data.pages;
+          this.limit = Response.data.limit;
           this.loans = Response.data.data;
           this.sum_loan = Response.data.sum_loans_data;
           this.loans.forEach((item) => {
@@ -402,12 +335,13 @@ export default {
           catchError(error);
         });
     },
-    getTrue(id, page, limit) {
+    getTrue(page, limit) {
       this.$emit("setloading", true);
-      loans(true, id, page, limit)
+      loans(true, this.customer_id, page, limit)
         .then((Response) => {
           this.page = Response.data.current_page;
           this.pages = Response.data.pages;
+          this.limit = Response.data.limit;
           this.loans_true = Response.data.data;
           this.loans_true.forEach((item) => {
             if (

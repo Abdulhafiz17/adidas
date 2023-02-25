@@ -391,9 +391,11 @@ import {
   updateUser,
   users,
 } from "@/components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   name: "Hodimlar",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       _: Intl.NumberFormat(),

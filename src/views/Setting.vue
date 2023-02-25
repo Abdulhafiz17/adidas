@@ -122,7 +122,7 @@
     </details>
 
     <details v-if="role == 'admin'">
-      <summary @click="getCategories()">
+      <summary @click="getCategories(0, 25)">
         <strong>Kategoriyalar</strong>
         <p>
           Yangi kategoriya qo'shish yoki mavjud kategoriya ma'lumotini
@@ -193,6 +193,14 @@
               </button>
             </div>
           </form>
+        </div>
+        <div class="col-md-8 mx-auto">
+          <Pagination
+            :page="page"
+            :pages="pages"
+            :limit="limit"
+            @get="getCategories"
+          />
         </div>
       </div>
     </details>
@@ -292,9 +300,11 @@ import {
   createCurrency,
   branch,
 } from "../components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   name: "Setting",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       mode: document.querySelector(".app").classList[1],
@@ -303,6 +313,9 @@ export default {
       branch: null,
       branch_id: localStorage.getItem("branch_id"),
       currencies: [],
+      page: 0,
+      pages: 1,
+      limit: 25,
       categories: [],
       category: {
         name: null,
@@ -360,10 +373,13 @@ export default {
           catchError(error);
         });
     },
-    getCategories() {
+    getCategories(page, limit) {
       this.$emit("setloading", true);
-      categories(0, 0, 100)
+      categories(0, page, limit)
         .then((Response) => {
+          this.page = Response.data.current_page;
+          this.pages = Response.data.pages;
+          this.limit = Response.data.limit;
           this.categories = Response.data.data;
           this.$emit("setloading", false);
         })

@@ -80,7 +80,12 @@
           role="tab"
           aria-controls="pills-home"
           aria-selected="true"
-          @click="getCategories(0, 50)"
+          @click="
+            page = 0;
+            pages = 1;
+            limit = 50;
+            getCategories(0, 50);
+          "
         >
           Ombor mahsulotlari
         </button>
@@ -95,7 +100,12 @@
           role="tab"
           aria-controls="pills-profile"
           aria-selected="false"
-          @click="getProducts2(0, 100)"
+          @click="
+            page = 0;
+            pages = 1;
+            limit = 50;
+            getProducts2(0, 50);
+          "
         >
           Filialga mahsulot yuborish
         </button>
@@ -110,7 +120,12 @@
           role="tab"
           aria-controls="pills-products"
           aria-selected="false"
-          @click="getTransfersWaiting(0, 100)"
+          @click="
+            page = 0;
+            pages = 1;
+            limit = 50;
+            getTransfersWaiting(0, 50);
+          "
         >
           Filialga yuborilgan mahsulotlar
         </button>
@@ -126,7 +141,12 @@
         <div class="row">
           <div class="col-md-11 mx-auto responsive">
             <details v-for="item in categories" :key="item">
-              <summary @click="getProducts(item, 0, limit)">
+              <summary
+                @click="
+                  category_for_product = item;
+                  getProducts(0, limit);
+                "
+              >
                 <h5>{{ item.Warehouse_products.category.name }}</h5>
               </summary>
               <table class="table table-sm table-hover">
@@ -207,51 +227,12 @@
                 <tfoot>
                   <tr>
                     <td colspan="7">
-                      <div class="input-group input-group-sm">
-                        <button
-                          class="btn btn-sm"
-                          @click="getProducts(item, 0, limit)"
-                          :disabled="page == 0"
-                        >
-                          <i class="fa fa-angle-double-left" />
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getProducts(item, page - 1, limit)"
-                          :disabled="page == 0"
-                        >
-                          <i class="fa fa-angle-left" />
-                        </button>
-                        <button class="btn btn-sm">
-                          {{ page + 1 }}
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getProducts(item, page + 1, limit)"
-                          :disabled="page == pages - 1 || pages == 0"
-                        >
-                          <i class="fa fa-angle-right" />
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getProducts(item, pages - 1, limit)"
-                          :disabled="page == pages - 1 || pages == 0"
-                        >
-                          <i class="fa fa-angle-double-right" />
-                        </button>
-                        <div class="input-group-append">
-                          <select
-                            class="form-select form-select-sm"
-                            v-model="limit"
-                            @change="getProducts(item, page, limit)"
-                          >
-                            <option disabled value="">limit</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                          </select>
-                        </div>
-                      </div>
+                      <Pagination
+                        :page="page1"
+                        :pages="pages1"
+                        :limit="limit1"
+                        @get="getProducts"
+                      />
                     </td>
                   </tr>
                 </tfoot>
@@ -282,10 +263,7 @@
               </select> -->
               <div class="dropdown">
                 <button
-                  class="
-                    btn btn-sm btn-block btn-outline-secondary
-                    dropdown-toggle
-                  "
+                  class="btn btn-sm btn-block btn-outline-secondary dropdown-toggle"
                   type="button"
                   data-toggle="dropdown"
                   @click="getBranches()"
@@ -426,51 +404,12 @@
                   <tfoot>
                     <tr>
                       <td colspan="7">
-                        <div class="input-group input-group-sm">
-                          <button
-                            class="btn btn-sm"
-                            @click="getProducts2(0, limit)"
-                            :disabled="page == 0"
-                          >
-                            <i class="fa fa-angle-double-left" />
-                          </button>
-                          <button
-                            class="btn btn-sm"
-                            @click="getProducts2(page - 1, limit)"
-                            :disabled="page == 0"
-                          >
-                            <i class="fa fa-angle-left" />
-                          </button>
-                          <button class="btn btn-sm">
-                            {{ page + 1 }}
-                          </button>
-                          <button
-                            class="btn btn-sm"
-                            @click="getProducts2(page + 1, limit)"
-                            :disabled="page == pages - 1 || pages == 0"
-                          >
-                            <i class="fa fa-angle-right" />
-                          </button>
-                          <button
-                            class="btn btn-sm"
-                            @click="getProducts2(pages - 1, limit)"
-                            :disabled="page == pages - 1 || pages == 0"
-                          >
-                            <i class="fa fa-angle-double-right" />
-                          </button>
-                          <div class="input-group-append">
-                            <select
-                              class="form-select form-select-sm"
-                              v-model="limit"
-                              @change="getProducts2(page, limit)"
-                            >
-                              <option disabled value="">limit</option>
-                              <option value="25">25</option>
-                              <option value="50">50</option>
-                              <option value="100">100</option>
-                            </select>
-                          </div>
-                        </div>
+                        <Pagination
+                          :page="page"
+                          :pages="pages"
+                          :limit="limit"
+                          @get="getProducts2"
+                        />
                       </td>
                     </tr>
                   </tfoot>
@@ -501,7 +440,12 @@
               role="tab"
               aria-controls="pills-wait"
               aria-selected="true"
-              @click="getTransfersWaiting(0, 100)"
+              @click="
+                page = 0;
+                pages = 1;
+                limit = 50;
+                getTransfersWaiting(0, 50);
+              "
             >
               Kutilayotgan
             </button>
@@ -516,7 +460,12 @@
               role="tab"
               aria-controls="pills-done"
               aria-selected="false"
-              @click="getTransfersAccepted(0, 100)"
+              @click="
+                page = 0;
+                pages = 1;
+                limit = 50;
+                getTransfersAccepted(0, 50);
+              "
             >
               Qabul qilingan
             </button>
@@ -559,7 +508,7 @@
               <div class="col mb-1">
                 <button
                   class="btn btn-sm btn-block btn-outline-secondary"
-                  @click="getTransfersWaiting(0, 100)"
+                  @click="getTransfersWaiting(0, 50)"
                 >
                   <i class="far fa-circle-check" />
                 </button>
@@ -623,51 +572,12 @@
                 <tfoot>
                   <tr>
                     <td colspan="8">
-                      <div class="input-group input-group-sm">
-                        <button
-                          class="btn btn-sm"
-                          @click="getTransfersWaiting(0, limit)"
-                          :disabled="page == 0"
-                        >
-                          <i class="fa fa-angle-double-left" />
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getTransfersWaiting(page - 1, limit)"
-                          :disabled="page == 0"
-                        >
-                          <i class="fa fa-angle-left" />
-                        </button>
-                        <button class="btn btn-sm">
-                          {{ page + 1 }}
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getTransfersWaiting(page + 1, limit)"
-                          :disabled="page == pages - 1 || pages == 0"
-                        >
-                          <i class="fa fa-angle-right" />
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getTransfersWaiting(pages - 1, limit)"
-                          :disabled="page == pages - 1 || pages == 0"
-                        >
-                          <i class="fa fa-angle-double-right" />
-                        </button>
-                        <div class="input-group-append">
-                          <select
-                            class="form-select form-select-sm"
-                            v-model="limit"
-                            @change="getTransfersWaiting(page, limit)"
-                          >
-                            <option disabled value="">limit</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                          </select>
-                        </div>
-                      </div>
+                      <Pagination
+                        :page="page"
+                        :pages="pages"
+                        :limit="limit"
+                        @get="getTransfersWaiting"
+                      />
                     </td>
                   </tr>
                 </tfoot>
@@ -710,7 +620,7 @@
               <div class="col mb-1">
                 <button
                   class="btn btn-sm btn-block btn-outline-secondary"
-                  @click="getTransfersAccepted(0, 100)"
+                  @click="getTransfersAccepted(0, 50)"
                 >
                   <i class="far fa-circle-check" />
                 </button>
@@ -754,51 +664,12 @@
                 <tfoot>
                   <tr>
                     <td colspan="8">
-                      <div class="input-group input-group-sm">
-                        <button
-                          class="btn btn-sm"
-                          @click="getTransfersAccepted(0, limit)"
-                          :disabled="page == 0"
-                        >
-                          <i class="fa fa-angle-double-left" />
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getTransfersAccepted(page - 1, limit)"
-                          :disabled="page == 0"
-                        >
-                          <i class="fa fa-angle-left" />
-                        </button>
-                        <button class="btn btn-sm">
-                          {{ page + 1 }}
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getTransfersAccepted(page + 1, limit)"
-                          :disabled="page == pages - 1 || pages == 0"
-                        >
-                          <i class="fa fa-angle-right" />
-                        </button>
-                        <button
-                          class="btn btn-sm"
-                          @click="getTransfersAccepted(pages - 1, limit)"
-                          :disabled="page == pages - 1 || pages == 0"
-                        >
-                          <i class="fa fa-angle-double-right" />
-                        </button>
-                        <div class="input-group-append">
-                          <select
-                            class="form-select form-select-sm"
-                            v-model="limit"
-                            @change="getTransfersAccepted(page, limit)"
-                          >
-                            <option disabled value="">limit</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                          </select>
-                        </div>
-                      </div>
+                      <Pagination
+                        :page="page"
+                        :pages="pages"
+                        :limit="limit"
+                        @get="getTransfersAccepted"
+                      />
                     </td>
                   </tr>
                 </tfoot>
@@ -1147,16 +1018,21 @@ import {
   warehouseBalances,
   warehouseProducts,
 } from "@/components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 import swal from "sweetalert";
 export default {
   name: "Ombor",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       search: "",
       page: 0,
-      pages: null,
+      pages: 1,
       limit: 100,
+      page1: 0,
+      pages1: 1,
+      limit1: 100,
       warehouse: null,
       product: null,
       product_history: [],
@@ -1179,6 +1055,7 @@ export default {
       products2: [],
       productsToBranch: [],
       categories: [],
+      category_for_product: null,
       categories2: [],
       currencies: [],
       branches: [],
@@ -1235,17 +1112,17 @@ export default {
         }
       }
     },
-    getProducts(data, page, limit) {
+    getProducts(page, limit) {
       this.$emit("setloading", true);
       warehouseProducts(
         this.$route.params.id,
-        data.Warehouse_products.category_id,
+        this.category_for_product.Warehouse_products.category_id,
         page,
         limit,
         false
       )
         .then((Response) => {
-          data.products = Response.data.data;
+          this.category_for_product.products = Response.data.data;
           this.page = Response.data.current_page;
           this.pages = Response.data.pages;
           this.$emit("setloading", false);
@@ -1284,6 +1161,7 @@ export default {
           });
           this.page = Response.data.current_page;
           this.pages = Response.data.pages;
+          this.limit = Response.data.limit;
           this.$emit("setloading", false);
         })
         .catch((error) => {
@@ -1306,6 +1184,7 @@ export default {
           this.transfersWaiting = Response.data.data;
           this.page = Response.data.current_page;
           this.pages = Response.data.pages;
+          this.limit = Response.data.limit;
           this.$emit("setloading", false);
         })
         .catch((error) => {
@@ -1328,6 +1207,7 @@ export default {
           this.transfersAccepted = Response.data.data;
           this.page = Response.data.current_page;
           this.pages = Response.data.pages;
+          this.limit = Response.data.limit;
           this.$emit("setloading", false);
         })
         .catch((error) => {

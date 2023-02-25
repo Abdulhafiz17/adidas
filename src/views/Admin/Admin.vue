@@ -92,51 +92,12 @@
         <tfoot>
           <tr>
             <td colspan="4">
-              <div class="input-group input-group-sm">
-                <button
-                  class="btn btn-sm"
-                  @click="getExpenses(0, limit)"
-                  :disabled="page == 0"
-                >
-                  <i class="fa fa-angle-double-left" />
-                </button>
-                <button
-                  class="btn btn-sm"
-                  @click="getExpenses(page - 1, limit)"
-                  :disabled="page == 0"
-                >
-                  <i class="fa fa-angle-left" />
-                </button>
-                <button class="btn btn-sm">
-                  {{ page + 1 }}
-                </button>
-                <button
-                  class="btn btn-sm"
-                  @click="getExpenses(page + 1, limit)"
-                  :disabled="page == pages - 1 || pages == 0"
-                >
-                  <i class="fa fa-angle-right" />
-                </button>
-                <button
-                  class="btn btn-sm"
-                  @click="getExpenses(pages - 1, limit)"
-                  :disabled="page == pages - 1 || pages == 0"
-                >
-                  <i class="fa fa-angle-double-right" />
-                </button>
-                <div class="input-group-append">
-                  <select
-                    class="form-select form-select-sm"
-                    v-model="limit"
-                    @change="getExpenses(page, limit)"
-                  >
-                    <option disabled value="">limit</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                  </select>
-                </div>
-              </div>
+              <Pagination
+                :page="page"
+                :pages="pages"
+                :limit="limit"
+                @get="getExpenses"
+              />
             </td>
           </tr>
         </tfoot>
@@ -208,9 +169,11 @@ import {
   removeAdminExpense,
   success,
 } from "@/components/Api/Api";
+import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
   name: "Admin",
   emits: ["setloading"],
+  components: { Pagination },
   data() {
     return {
       page: 0,
