@@ -29,15 +29,28 @@
     <div class="col-md-1 mb-1">
       <button
         class="btn btn-sm btn-block btn-outline-secondary"
-        @click="get(page, limit)"
+        @click="
+          from_time && to_time ? getSum(page, limit) : (sum_expenses = []);
+          get(page, limit);
+        "
       >
         <i class="far fa-circle-check" />
       </button>
     </div>
   </div>
+  <div class="row" v-if="sum_expenses.length">
+    <div class="col-12">
+      <span class="p-2"> Umumiy chiqim </span>
+      <strong class="p-2" v-for="item in sum_expenses" :key="item">
+        {{ _.format(item.sum_price) + " " + item.currency }}
+      </strong>
+    </div>
+  </div>
   <div
     class="table-responsive"
-    :style="`max-height: ${role == 'branch_admin' ? '74vh' : '79vh'}`"
+    :style="`max-height: ${
+      role == 'admin' ? '79vh' : sum_expenses.length ? '70vh' : '74vh'
+    }`"
   >
     <table class="table table-sm table-hover">
       <thead>
@@ -87,6 +100,7 @@ import {
   catchError,
   fixedExpense,
   variableExpenses,
+  tradeSumStatistics,
 } from "@/components/Api/Api";
 import Pagination from "@/components/Pagination/Pagination.vue";
 export default {
@@ -96,13 +110,16 @@ export default {
   components: { Pagination },
   data() {
     return {
+      _: Intl.NumberFormat(),
       role: localStorage["role"],
+      branch_id: localStorage["branch_id"],
       page: 0,
       pages: 1,
       limit: 50,
       id: 0,
       from_time: "",
       to_time: "",
+      sum_expenses: [],
       history: [],
     };
   },
@@ -115,6 +132,18 @@ export default {
     this.getFixedExpenses(this.page, this.limit);
   },
   methods: {
+    getSum(page, limit) {
+      this.$emit("setloading", true);
+      tradeSumStatistics(this.from_time, this.to_time, this.branch_id)
+        .then((res) => {
+          this.sum_expenses = res.data[0].expenses;
+          this.getFixedExpenses(page, limit);
+        })
+        .catch((err) => {
+          this.$emit("setloading", false);
+          catchError(err);
+        });
+    },
     getFixedExpenses(page, limit) {
       this.$emit("setloading", true);
       fixedExpense(
