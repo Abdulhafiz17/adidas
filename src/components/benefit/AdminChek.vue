@@ -79,12 +79,6 @@
                 </span>
               </strong>
             </span>
-            <span>
-              Maosh:
-              <strong>
-                {{ _.format(data?.total_profit) + " " + currency }}
-              </strong>
-            </span>
             <hr />
             <div class="date">Chegirmadan qolgan summa</div>
             <span>
@@ -101,9 +95,46 @@
             </span>
             <hr />
             <span>
+              Oylik:
+              <strong>
+                {{ _.format(data?.total_profit) + " " + currency }}
+              </strong>
+            </span>
+            <span>
+              Maosh:
+              <strong>
+                {{ _.format(data?.maosh) + " " + currency }}
+              </strong>
+            </span>
+            <span>
+              Nasiya maosh:
+              <strong>
+                {{ _.format(data?.nasiya_maosh) + " " + currency }}
+              </strong>
+            </span>
+            <hr />
+            <span>
               Admin summa:
               <strong>
                 {{ _.format(data?.admin_price) + " " + currency }}
+              </strong>
+            </span>
+            <span>
+              Admin oldi:
+              <strong>
+                {{ _.format(data?.admin_oldi) + " " + currency }}
+              </strong>
+            </span>
+            <span>
+              Admin terminal:
+              <strong>
+                {{ _.format(data?.income_p_sum) + " " + currency }}
+              </strong>
+            </span>
+            <span>
+              Admin nasiya:
+              <strong>
+                {{ _.format(data?.order_loan_sum_admin) + " " + currency }}
               </strong>
             </span>
           </div>

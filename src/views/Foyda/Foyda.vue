@@ -3,18 +3,24 @@
   <div class="row">
     <div class="col-md-9 my-1" v-if="distribute">
       <div class="row">
-        <div class="col-md-6 my-1">
-          <button
-            class="btn btn-sm btn-block btn-outline-primary"
-            data-toggle="modal"
-            data-target="#orders"
-          >
+        <div
+          class="col-md-6 my-1 d-flex align-items-center justify-content-center"
+        >
+          <span
+            >Umumiy savdo:
+
             {{
               Intl.NumberFormat().format(distribute.trade_total_price) +
               " " +
               branch_currency
             }}
-          </button>
+          </span>
+          <!-- <button
+            class="btn btn-sm btn-block btn-outline-primary"
+            data-toggle="modal"
+            data-target="#orders"
+          >
+          </button> -->
         </div>
         <div
           class="col-md-6 my-1 text-success d-flex align-items-center justify-content-center"
@@ -28,6 +34,7 @@
                 : 'text-warning'
             "
           >
+            Umumiy foyda:
             {{
               Intl.NumberFormat().format(distribute.total_profit) +
               " " +
