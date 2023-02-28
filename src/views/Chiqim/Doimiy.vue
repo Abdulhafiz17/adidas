@@ -31,7 +31,7 @@
         class="btn btn-sm btn-block btn-outline-secondary"
         @click="
           from_time && to_time ? getSum(page, limit) : (sum_expenses = []);
-          get(page, limit);
+          getFixedExpenses(page, limit);
         "
       >
         <i class="far fa-circle-check" />
