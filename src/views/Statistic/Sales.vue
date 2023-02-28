@@ -49,129 +49,11 @@
     <canvas id="salesChart" width="600" height="250" />
   </div>
 
-  <details v-if="template == 'card'">
-    <summary>Umumiy</summary>
-    <div class="row p-2" v-for="item in sum" :key="item">
-      <div class="col-md-4 mb-1">
-        <div class="card shadow">
-          <div class="card-body">
-            Umumiy tan narx:
-            <strong>
-              {{ _.format(item.trade_total_tan_narx) + " " + branch_currency }}
-            </strong>
-            <hr />
-            Umumiy savdo:
-            <strong>
-              {{ _.format(item.trade_total_price) + " " + branch_currency }}
-            </strong>
-            <hr />
-            Vozvrat:
-            <strong>
-              {{ _.format(item.returned_price) + " " + branch_currency }}
-            </strong>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 mb-1">
-        <div class="card shadow">
-          <div class="card-body">
-            Kirim
-            <hr />
-            <span v-show="item.incomes_trade.length">
-              Savdo
-              <br />
-              <strong>
-                <span
-                  v-for="item2 in item.incomes_trade"
-                  :key="item2"
-                  v-show="item2.sum_price"
-                >
-                  {{
-                    _.format(item2.sum_price) +
-                    " " +
-                    branch_currency +
-                    " " +
-                    item2.type
-                  }}
-                  <br />
-                </span>
-              </strong>
-            </span>
-            <span v-show="item.incomes_loan.length">
-              <hr />
-              Nasiya
-              <br />
-              <strong>
-                <span
-                  v-for="item2 in item.incomes_loan"
-                  :key="item2"
-                  v-show="item2.sum_price"
-                >
-                  {{
-                    _.format(item2.sum_price) +
-                    " " +
-                    branch_currency +
-                    " " +
-                    item2.type
-                  }}
-                  <br />
-                </span>
-              </strong>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 mb-1">
-        <div class="card shadow">
-          <div class="card-body">
-            Chiqimlar
-            <hr />
-            <strong>
-              <span v-for="item2 in item.expenses" :key="item">
-                {{ _.format(item2.sum_price) + " " + item2.currency }} <br />
-              </span>
-            </strong>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-12">
-        <div class="card shadow">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-4">
-                Adminga beriladigan summa <br />
-                <strong>{{
-                  _.format(item.admin_price) + " " + branch_currency
-                }}</strong>
-              </div>
-              <div class="col-md-4">
-                Chegirmadan qolgan summa <br />
-                <strong class="text-success">
-                  {{
-                    _.format(item.trade_total_discount) + " " + branch_currency
-                  }}
-                </strong>
-              </div>
-              <div class="col-md-4">
-                Ish xaqqi <br />
-                <strong
-                  :class="
-                    item.total_profit > 0
-                      ? 'text-success'
-                      : item.total_profit < 0
-                      ? 'text-danger'
-                      : ''
-                  "
-                >
-                  {{ _.format(item.total_profit) + " " + branch_currency }}
-                </strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </details>
+  <ul class="list-group" v-if="template == 'card'">
+    <li class="list-group-item" data-toggle="modal" data-target="#sum">
+      <strong>Umumiy</strong>
+    </li>
+  </ul>
 
   <div
     v-if="template == 'card'"
@@ -342,6 +224,154 @@
               </ul>
             </details>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="sum">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row" v-for="item in sum" :key="item">
+            <div class="col-md-4 mb-1">
+              <div class="card shadow">
+                <div class="card-body p-2">
+                  Umumiy tan narx
+                  <br />
+                  <strong>
+                    {{
+                      _.format(item.trade_total_tan_narx) +
+                      " " +
+                      branch_currency
+                    }}
+                  </strong>
+                  <hr />
+                  Umumiy savdo
+                  <br />
+                  <strong>
+                    {{
+                      _.format(item.trade_total_price) + " " + branch_currency
+                    }}
+                  </strong>
+                  <hr />
+                  Vozvrat
+                  <br />
+                  <strong>
+                    {{ _.format(item.returned_price) + " " + branch_currency }}
+                  </strong>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-1">
+              <div class="card shadow">
+                <div class="card-body p-2">
+                  Kirim
+                  <hr />
+                  <span v-show="item.incomes_trade.length">
+                    Savdo
+                    <br />
+                    <strong>
+                      <span
+                        v-for="item2 in item.incomes_trade"
+                        :key="item2"
+                        v-show="item2.sum_price"
+                      >
+                        {{
+                          _.format(item2.sum_price) +
+                          " " +
+                          branch_currency +
+                          " " +
+                          item2.type
+                        }}
+                        <br />
+                      </span>
+                    </strong>
+                  </span>
+                  <span v-show="item.incomes_loan.length">
+                    <hr />
+                    Nasiya
+                    <br />
+                    <strong>
+                      <span
+                        v-for="item2 in item.incomes_loan"
+                        :key="item2"
+                        v-show="item2.sum_price"
+                      >
+                        {{
+                          _.format(item2.sum_price) +
+                          " " +
+                          branch_currency +
+                          " " +
+                          item2.type
+                        }}
+                        <br />
+                      </span>
+                    </strong>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-1">
+              <div class="card shadow">
+                <div class="card-body p-2">
+                  Chiqimlar
+                  <hr />
+                  <strong>
+                    <span v-for="item2 in item.expenses" :key="item">
+                      {{ _.format(item2.sum_price) + " " + item2.currency }}
+                      <br />
+                    </span>
+                  </strong>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="card shadow">
+                <div class="card-body p-2">
+                  <div class="row">
+                    <div class="col-md-4">
+                      Adminga beriladigan summa <br />
+                      <strong>{{
+                        _.format(item.admin_price) + " " + branch_currency
+                      }}</strong>
+                    </div>
+                    <div class="col-md-4">
+                      Chegirmadan qolgan summa <br />
+                      <strong class="text-success">
+                        {{
+                          _.format(item.trade_total_discount) +
+                          " " +
+                          branch_currency
+                        }}
+                      </strong>
+                    </div>
+                    <div class="col-md-4">
+                      Ish xaqqi <br />
+                      <strong
+                        :class="
+                          item.total_profit > 0
+                            ? 'text-success'
+                            : item.total_profit < 0
+                            ? 'text-danger'
+                            : ''
+                        "
+                      >
+                        {{
+                          _.format(item.total_profit) + " " + branch_currency
+                        }}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-danger" data-dismiss="modal">
+            <i class="far fa-circle-xmark"></i>
+          </button>
         </div>
       </div>
     </div>
