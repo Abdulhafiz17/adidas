@@ -584,7 +584,7 @@ export default {
     },
     getTrades(page, limit) {
       this.$emit("setloading", true);
-      trades(this.order.id, page, limit)
+      trades(this.order.Orders.id, page, limit)
         .then((Response) => {
           this.trades = Response.data.data;
           this.getReturnedProducts(0, 100);
@@ -635,7 +635,7 @@ export default {
     },
     getReturnedProducts(page, limit) {
       this.$emit("setloading", true);
-      let id = this.order ? this.order.id : 0;
+      let id = this.order ? this.order.Orders.id : 0;
       returnedProducts(id, page, limit)
         .then((Response) => {
           this.returned_products = Response.data.data;
