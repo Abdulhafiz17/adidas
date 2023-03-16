@@ -138,7 +138,12 @@
               <tfoot>
                 <tr>
                   <td colspan="9">
-                    <Pagination :page="page" :pages="pages" :limit="limit" @get="getProducts" />
+                    <Pagination
+                      :page="page1"
+                      :pages="pages1"
+                      :limit="limit1"
+                      @get="getProducts"
+                    />
                   </td>
                 </tr>
               </tfoot>
@@ -147,12 +152,7 @@
         </details>
       </div>
       <div class="col-sm-12" v-if="categories.length">
-        <Pagination
-          :page="page"
-          :pages="pages"
-          :limit="limit"
-          @get="get"
-        />
+        <Pagination :page="page" :pages="pages" :limit="limit" @get="get" />
       </div>
     </div>
   </div>
