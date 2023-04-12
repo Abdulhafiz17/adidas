@@ -474,9 +474,7 @@ export default {
             comment: "",
           };
           document.querySelector("#close").click();
-          success().then(() => {
-            this.expense = "variable";
-          });
+          success().then(() => {});
         })
         .catch((error) => {
           this.$emit("setloading", false);
