@@ -86,7 +86,7 @@
               </ul>
             </details>
             <div class="row my-1 gap-1">
-              <div class="col">
+              <div class="col" v-if="$route.params.id !== '0'">
                 <router-link
                   class="btn btn-sm btn-block btn-outline-info"
                   :to="'/hodim/' + hodim.id"
@@ -160,7 +160,7 @@
                   />
                 </label>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6" v-if="$route.params.id !== '0'">
                 Vazifasi
                 <select
                   class="form-control form-control-sm"
@@ -175,7 +175,7 @@
                   <option value="supplier">Taminotchi</option>
                 </select>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6" v-if="$route.params.id !== '0'">
                 Ulush
                 <label class="input-group input-group-sm">
                   <input
@@ -269,6 +269,27 @@
             </div>
             <div class="row">
               <div class="col-md-6">
+                Foydalanuvchi nomi
+                <input
+                  class="form-control form-control-sm"
+                  type="text"
+                  placeholder="foydalanuvchi nomi"
+                  required
+                  v-model="editHodim.username"
+                />
+              </div>
+              <div class="col-md-6">
+                Parol
+                <input
+                  class="form-control form-control-sm"
+                  type="password"
+                  placeholder="parol"
+                  v-model="editHodim.password"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6" v-if="$route.params.id !== '0'">
                 Ulush
                 <label class="input-group input-group-sm">
                   <input
@@ -296,27 +317,6 @@
                   <option value="true">Faol</option>
                   <option value="false">Nofaol</option>
                 </select>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                Foydalanuvchi nomi
-                <input
-                  class="form-control form-control-sm"
-                  type="text"
-                  placeholder="foydalanuvchi nomi"
-                  required
-                  v-model="editHodim.username"
-                />
-              </div>
-              <div class="col-md-6">
-                Parol
-                <input
-                  class="form-control form-control-sm"
-                  type="password"
-                  placeholder="parol"
-                  v-model="editHodim.password"
-                />
               </div>
             </div>
           </div>
@@ -410,10 +410,10 @@ export default {
         name: "",
         username: "",
         password: "",
-        role: "",
+        role: this.$route.params.id == "0" ? "supplier" : "",
         branch_id: "",
         phone: null,
-        profit_percentage: null,
+        profit_percentage: 0,
         status: true,
       },
       editHodim: {},
@@ -504,10 +504,11 @@ export default {
             name: "",
             username: "",
             password: "",
-            role: "",
+            role: this.$route.params.id == "0" ? "supplier" : "",
             branch_id: "",
             phone: null,
             status: true,
+            profit_percentage: 0,
           };
           success(0).then(() => {
             this.get(this.$route.params.id, 0, 25);
