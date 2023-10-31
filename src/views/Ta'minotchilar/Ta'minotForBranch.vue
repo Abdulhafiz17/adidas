@@ -59,7 +59,7 @@
                 <th>O'lcham</th>
                 <th>Miqdor</th>
                 <th>Oxirgi narx</th>
-                <th>Sotuv narx</th>
+                <!-- <th>Sotuv narx</th> -->
                 <th>Vetrina narx</th>
                 <th></th>
               </tr>
@@ -106,7 +106,7 @@
                     form="form"
                   />
                 </td>
-                <td>
+                <!-- <td>
                   <input
                     class="form-control form-control-sm"
                     type="number"
@@ -118,7 +118,7 @@
                     v-model="item.sotuv_narx"
                     form="form"
                   />
-                </td>
+                </td> -->
                 <td>
                   <input
                     class="form-control form-control-sm"
@@ -199,14 +199,10 @@
                   >
                     {{
                       item.Currencies.id == branch_currency.id
-                        ? _.format(
-                            item.Transfers.transfer_price
-                          ) +
+                        ? _.format(item.Transfers.transfer_price) +
                           " " +
                           item.Currencies.currency
-                        : _.format(
-                            item.Transfers.transfer_price
-                          ) +
+                        : _.format(item.Transfers.transfer_price) +
                           " " +
                           item.Currencies.currency +
                           " ( " +

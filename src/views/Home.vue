@@ -12,7 +12,7 @@ export default {
     };
   },
   created() {
-    if (this.role == "admin") {
+    if (this.role == "admin" || this.role == "supplier") {
       // location.href = "/main";
       this.$router.push("/main");
     } else if (this.role == "branch_admin") {

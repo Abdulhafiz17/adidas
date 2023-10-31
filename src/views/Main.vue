@@ -17,7 +17,7 @@
         </div>
       </router-link>
     </div> -->
-    <div class="col-md-4 my-1">
+    <div class="col-md-4 my-1" v-if="role !== 'supplier'">
       <router-link to="/filiallar" class="card shadow">
         <div class="card-body">
           <i class="fa fa-2x fa-code-branch" />
@@ -26,7 +26,16 @@
         </div>
       </router-link>
     </div>
-    <div class="col-md-4 my-1">
+    <div class="col-md-4 my-1" v-if="role !== 'supplier'">
+      <router-link to="/hodimlar/0" class="card shadow">
+        <div class="card-body">
+          <i class="fa fa-2x fa-users" />
+          <hr />
+          <strong>Hodimlar</strong>
+        </div>
+      </router-link>
+    </div>
+    <div class="col-md-4 my-1" v-if="role !== 'supplier'">
       <router-link to="/omborlar" class="card shadow">
         <div class="card-body">
           <i class="fas fa-2x fa-warehouse" />
@@ -69,8 +78,13 @@
 export default {
   name: "Home",
   emits: ["setloading"],
+  data() {
+    return {
+      role: localStorage.getItem("role"),
+    };
+  },
   created() {
-    this.$emit("setloading", false)
+    this.$emit("setloading", false);
   },
 };
 </script>
@@ -81,6 +95,5 @@ export default {
     width: 50%;
     font-size: 14px;
   }
-
 }
 </style>

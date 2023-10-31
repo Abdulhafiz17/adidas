@@ -24,31 +24,31 @@ let routes = [
   {
     path: "/main",
     name: "main",
-    meta: { requiresAuth: true, title: "Asosiy", role: "admin" },
+    meta: { requiresAuth: true, title: "Asosiy", role: ["admin", "supplier"] },
     component: () => import("../views/Main.vue"),
   },
   {
     path: "/ombor/:id",
     name: "ombor",
-    meta: { requiresAuth: true, title: "Ombor", role: "admin" },
+    meta: { requiresAuth: true, title: "Ombor", role: ["admin"] },
     component: () => import("../views/Omborlar/Ombor.vue"),
   },
   {
     path: "/omborlar",
     name: "omborlar",
-    meta: { requiresAuth: true, title: "Omborlar", role: "admin" },
+    meta: { requiresAuth: true, title: "Omborlar", role: ["admin"] },
     component: () => import("../views/Omborlar/Omborlar.vue"),
   },
   {
     path: "/filiallar",
     name: "filiallar",
-    meta: { requiresAuth: true, title: "Filiallar", role: "admin" },
+    meta: { requiresAuth: true, title: "Filiallar", role: ["admin"] },
     component: () => import("../views/Filiallar/Filiallar.vue"),
   },
   {
     path: "/filial/:id",
     name: "filial",
-    meta: { requiresAuth: true, title: "Filial", role: "admin" },
+    meta: { requiresAuth: true, title: "Filial", role: ["admin"] },
     component: () => import("../views/Filiallar/FilialHistory.vue"),
   },
   {
@@ -60,7 +60,7 @@ let routes = [
   {
     path: "/statistics",
     name: "statistics",
-    meta: { requiresAuth: true, title: "Hisobotlar", role: "admin" },
+    meta: { requiresAuth: true, title: "Hisobotlar", role: ["admin"] },
     component: () => import("../views/AdminStatistic/Statistic.vue"),
   },
   {
@@ -108,13 +108,21 @@ let routes = [
   {
     path: "/taminotchi/:id",
     name: "taminotchi",
-    meta: { requiresAuth: true, title: "Ta'minotchi", role: "admin" },
+    meta: {
+      requiresAuth: true,
+      title: "Ta'minotchi",
+      role: ["admin", "supplier"],
+    },
     component: () => import("../views/Ta'minotchilar/Ta'minotchi.vue"),
   },
   {
     path: "/taminotchilar",
     name: "taminotchilar",
-    meta: { requiresAuth: true, title: "Ta'minotchilar", role: "admin" },
+    meta: {
+      requiresAuth: true,
+      title: "Ta'minotchilar",
+      role: ["admin", "supplier"],
+    },
     component: () => import("../views/Ta'minotchilar/Ta'minotchilar.vue"),
   },
   {
@@ -126,7 +134,11 @@ let routes = [
   {
     path: "/taminot/:id",
     name: "taminot",
-    meta: { requiresAuth: true, title: "Ta'minot", role: "admin" },
+    meta: {
+      requiresAuth: true,
+      title: "Ta'minot",
+      role: ["admin", "supplier"],
+    },
     component: () => import("../views/Ta'minotchilar/Ta'minot.vue"),
   },
   {
@@ -177,8 +189,8 @@ let routes = [
   },
   {
     path: "/admin/:id",
-    name: "admin",
-    meta: { requiresAuth: true, title: "Admin" },
+    name: ["admin"],
+    meta: { requiresAuth: true, title: ["Admin"] },
     component: () => import("../views/Admin/Admin.vue"),
   },
   {
@@ -191,7 +203,7 @@ let routes = [
 
 routes = routes.filter((item) => {
   if (item.meta.role) {
-    return item.meta.role == role;
+    return item.meta.role.includes(role);
   } else {
     return item;
   }

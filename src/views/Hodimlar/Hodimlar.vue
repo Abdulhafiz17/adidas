@@ -59,6 +59,7 @@
                   <span v-if="hodim.role == 'branch_admin'">Filial admin</span>
                   <span v-if="hodim.role == 'cashier'">Kassir</span>
                   <span v-if="hodim.role == 'seller'">Sotuvchi</span>
+                  <span v-if="hodim.role == 'supplier'">Taminotchi</span>
                 </li>
                 <li class="list-group-item">
                   <span class="fas fa-percent" />
@@ -171,6 +172,7 @@
                     Filial admin
                   </option>
                   <option value="seller">Sotuvchi</option>
+                  <option value="supplier">Taminotchi</option>
                 </select>
               </div>
               <div class="col-md-6">
@@ -457,7 +459,7 @@ export default {
       users(id, page, limit)
         .then((Response) => {
           this.hodimlar = Response.data.data;
-          this.getBranch();
+          if (this.branch_id !== 0) this.getBranch();
         })
         .catch((error) => {
           this.$emit("setloading", false);
@@ -479,7 +481,7 @@ export default {
       currencies()
         .then((Response) => {
           this.currency = Response.data.find((item) => {
-            return item.id == this.branch.trade_currency;
+            return item.id == this.branch?.trade_currency;
           });
           this.$emit("setloading", false);
         })
@@ -491,7 +493,7 @@ export default {
     post(data) {
       this.$emit("setloading", true);
       // if (this.role == "admin") {
-      data.branch_id = this.$route.params.id;
+      data.branch_id = this.$route.params.id || 0;
       // } else {
       //   data.branch_id = this.branch_id;
       // }
