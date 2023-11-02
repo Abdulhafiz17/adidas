@@ -378,7 +378,7 @@ export default {
         .then((Response) => {
           this.currencies = Response.data;
           this.branch_currency = this.currencies.find((item) => {
-            return item.id == this.branch.trade_currency;
+            return item.id == this.branch?.trade_currency;
           });
           this.getWarehouses(page, limit);
         })

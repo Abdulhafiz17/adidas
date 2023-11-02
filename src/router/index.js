@@ -144,7 +144,7 @@ let routes = [
   {
     path: "/taminot/:id",
     name: "taminot",
-    meta: { requiresAuth: true, title: "Ta'minot", role: "branch_admin" },
+    meta: { requiresAuth: true, title: "Ta'minot", role: ["branch_admin"] },
     component: () => import("../views/Ta'minotchilar/Ta'minotForBranch.vue"),
   },
   {
@@ -165,7 +165,7 @@ let routes = [
     meta: {
       requiresAuth: true,
       title: "Kategoriya mahsulotlari",
-      role: "branch_admin",
+      role: ["branch_admin"],
     },
     component: () => import("../views/Categories/CategoryProducts.vue"),
   },
