@@ -26,7 +26,7 @@
         </div>
       </router-link>
     </div>
-    <div class="col-md-4 my-1" v-if="role !== 'supplier'">
+    <div class="col-md-4 my-1" v-if="false">
       <router-link to="/hodimlar/0" class="card shadow">
         <div class="card-body">
           <i class="fa fa-2x fa-users" />
