@@ -463,6 +463,7 @@ export default {
       this.$emit("setloading", true);
       let quantity = null;
       products.forEach((item) => {
+        item.sotuv_narx = item.vitrina_narx;
         quantity += item.quantity;
       });
       if (quantity == this.quantity) {
